@@ -10,9 +10,9 @@ Status values: `todo`, `in-progress`, `done`, `submitted`.
 
 | Task | File(s) | Status | Due | Notes |
 |---|---|---|---|---|
-| Project summary | Work/Summary.tex | in-progress | — | |
-| Architectural proposal | Work/ArchitecturalProposal.tex | in-progress | — | |
-| C4 diagrams | Work/C4Diagrams.tex | in-progress | — | |
+| Project summary | Work/Summary.tex → Submission/Summary.pdf | submitted (2026-08-18) | — | Compiled, no LaTeX errors. |
+| Architectural proposal | Work/ArchitecturalProposal.tex → Submission/ArchitecturalProposal.pdf | submitted (2026-08-18) | — | Compiled, no LaTeX errors. |
+| C4 diagrams | Work/C4Diagrams.tex → Submission/C4Diagrams.pdf | submitted (2026-08-18) | — | Compiled, no LaTeX errors. |
 
 ## Backlog / new tasks
 
