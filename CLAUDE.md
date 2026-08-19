@@ -11,6 +11,11 @@ Software Architecture course project: "Sistema Integral de Gestión de Eventos"
     the user drops the exported files here manually.
   - `Work/Notes/` — one summary note per slide deck, written by the
     `slides-analyst` agent.
+  - `Work/BitacoraArquitectonica.md` — permanent, append-only log of
+    meetings, design decisions, architectural changes, analyses, and PoCs.
+    Required by the course (Clase 5) and graded as part of the process, not
+    a one-time submission — add a dated entry whenever the team makes or
+    revisits an architectural decision; never rewrite past entries.
 - `Submission/` — final files ready to hand in, one subfolder or file set per
   deliverable. Nothing goes here until it's actually finished; don't put
   drafts in this folder.
