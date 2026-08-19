@@ -29,3 +29,7 @@ _(Add new tasks here as they're assigned, e.g. from the course syllabus or profe
 3. When a new assignment comes up, add a row to **Deliverables** (or an item
    to **Backlog**) instead of just doing the work ad hoc, so the project
    stays trackable across sessions.
+4. Export class slides from Microsoft Teams into `Work/Slides/` (PDF
+   preferred). Running the `slides-analyst` agent reads them, writes notes to
+   `Work/Notes/`, and adds any assignments/deadlines it finds here
+   automatically — check the Backlog after running it.
