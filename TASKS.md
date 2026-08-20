@@ -19,6 +19,30 @@ Status values: `todo`, `in-progress`, `done`, `submitted`.
 Full rules (late-submission penalty, exam device policy, team rules, LLM-use
 policy, etc.) are in `Work/Notes/01. AS - Introducción al curso y reglas.md`.
 
+## Cronograma
+
+Full week-by-week schedule (team of 4, work started 2026-07-31) is in
+[`Cronograma.md`](./Cronograma.md) — covers what each slide deck (Clase
+1–14) asks for, the quality-attribute ownership split across the 4 team
+members, and internal milestones leading up to Entrega 1 and Entrega 2.
+
+**⚠️ No official dates for Entrega 1, Entrega 2, parciales, or
+sustentaciones appear in any slide deck reviewed so far (Clases 1–14).**
+The dates below are the team's own tentative planning, anchored only on the
+one confirmed fact — semester end is **2026-11-28** — with Entrega 2 placed
+one week before that. Replace them as soon as the professor confirms real
+dates (update both here and in `Cronograma.md`).
+
+| Hito | Fecha (tentativa salvo donde se indica) |
+|---|---|
+| Utility Tree formal + tácticas de disponibilidad (Clase 6) | 2026-08-28 |
+| Primer Parcial | 2026-09-25 |
+| **Entrega 1 (SAD v1, 15%)** | **2026-10-09** |
+| Segundo Parcial | 2026-11-06 |
+| **Entrega 2 (prototipo + SAD v2, 25%)** | **2026-11-20** |
+| Sustentaciones | 2026-11-24 a 2026-11-27 |
+| Fin de semestre | **2026-11-28 (confirmado)** |
+
 ## Deliverables
 
 | Task | File(s) | Status | Due | Notes |
@@ -28,7 +52,9 @@ policy, etc.) are in `Work/Notes/01. AS - Introducción al curso y reglas.md`.
 | Architectural proposal | Work/ArchitecturalProposal.tex → Submission/ArchitecturalProposal.pdf | submitted (2026-08-18) | — | Compiled, no LaTeX errors. Re-checked 2026-08-20 against the Clase 2/3 exercise (prioritize QA alta/media/baja, define components/connections, explain how the architecture satisfies each QA) — already covers all three explicitly, no changes needed. |
 | C4 diagrams | Work/C4Diagrams.tex → Submission/C4Diagrams.pdf | submitted (2026-08-20) | — | Now covers all 6 C4 diagrams (Context, Container, Component, System Landscape, Dynamic, Deployment) per the Clase 4 exercise; Level 4/Code deliberately excluded with justification. Checklist section rewritten to cover every official c4model.com item for all 6 diagrams. Compiled clean, 16 pages. |
 | Bitácora Arquitectónica | Work/BitacoraArquitectonica.md | in-progress (ongoing) | continuous | **New required deliverable** (from Clase 5): a permanently-updated log of meetings, design decisions, architectural changes, analyses, and PoCs. Created 2026-08-18; foundational decisions from ArchitecturalProposal.tex migrated in as a dated entry on 2026-08-20 (with alternatives/risks). Keep adding to it all semester — it's graded as part of the process, not a one-time submission. |
-| Use-case spreadsheet | Submission/CU_eventos_completo.xlsx | submitted (2026-08-20) | — | 25 use cases, renumbered CU-001..CU-025, all ≥8 steps, all with quality-attribute + infrastructure sections. See Bitácora entries from 2026-08-20 for details. |
+| Use-case spreadsheet | Submission/CU_eventos_completo.xlsx | in-progress (2026-08-20) | — | **32 use cases** (CU-001..CU-032, up from 25): added CU-026..CU-032 to cover missing CRUD/admin gaps (Eventos, Cuentas de Usuario, Roles y Permisos, Recintos y Zonas, Proveedores, Pagos y Conciliación Financiera, Reportes y Analítica) — see Bitácora entry "7 casos de uso nuevos (CU-026 a CU-032)". Status set back to in-progress: the 7 new sheets have `Autor: Hexacore` as a placeholder and haven't been reviewed by the team — re-submit (status → submitted) once reviewed. |
+| **Entrega 1 (SAD v1)** | Work/ArchitecturalProposal.tex + Bitácora + PoCs + prototipo individual → Submission/ | todo | 2026-10-09 (tentative) | Full checklist in `Cronograma.md` § "Checklist consolidado — Entrega 1". Needs: CU + RNF spec, ASR (Utility Tree), diseño arquitectónico, PoCs de desafíos técnicos, prototipo del CU más complejo por integrante, listado de CU/QA comprometidos para Entrega 2. |
+| **Entrega 2 (prototipo + SAD v2)** | Full repo + deploy script → Submission/ | todo | 2026-11-20 (tentative — 1 week before semester end) | Full checklist in `Cronograma.md` § "Checklist consolidado — Entrega 2". Needs: prototipo funcional completo, SAD v2 con resultados de validación, código documentado en Git, script de despliegue automatizado. |
 
 ## Backlog / new tasks
 
@@ -93,6 +119,26 @@ _(Add new tasks here as they're assigned, e.g. from the course syllabus or profe
       confirmar que `Work/ArchitecturalProposal.tex` mencione
       explícitamente estos mecanismos para el manejo de usuarios/pagos del
       proyecto. Sugerencia, no un ejercicio confirmado del profesor.
+- [ ] **Revisar y validar los 7 casos de uso nuevos (CU-026 a CU-032).**
+      Añadidos 2026-08-20 a `Submission/CU_eventos_completo.xlsx` para
+      cerrar huecos de CRUD que no tenían caso de uso propio: Gestión de
+      Eventos, Cuentas de Usuario, Roles y Permisos, Recintos y Zonas,
+      Proveedores, Pagos y Conciliación Financiera, Reportes y Analítica.
+      Pendiente: (1) asignar el "Autor" real de cada uno en vez del
+      placeholder `Hexacore`; (2) revisar si `Work/ArchitecturalProposal.tex`
+      y los diagramas C4 necesitan reflejar nuevos microservicios/entidades
+      (p. ej. Recintos, Roles) que estos CU asumen; (3) confirmar que el
+      reparto de casos de uso por integrante en `Cronograma.md` siga
+      cuadrando con el total ahora en 32. Detalle completo en la Bitácora.
+- [x] **Crear cronograma completo del proyecto.** `Cronograma.md` creado
+      2026-08-20: planificación semana a semana desde 2026-07-31 hasta
+      2026-11-28 (fin de semestre, dato confirmado por el equipo), con lo
+      que pide cada diapositiva (Clases 1–14), reparto de atributos de
+      calidad entre los 4 integrantes (I1–I4, pendiente reemplazar por
+      nombres reales), y checklists de Entrega 1/Entrega 2. Todas las
+      fechas salvo el fin de semestre son tentativas — confirmar con el
+      profesor y actualizar tanto `Cronograma.md` como la tabla de "Fechas
+      clave" arriba en este archivo.
 
 ## Workflow
 

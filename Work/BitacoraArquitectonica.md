@@ -23,6 +23,85 @@ Cada entrada nueva va arriba (orden cronológico inverso), con este formato:
 
 ---
 
+## 2026-08-20 — 7 casos de uso nuevos (CU-026 a CU-032) para cerrar huecos de CRUD
+
+**Tipo:** Cambio arquitectónico
+
+**Contexto:** El usuario pidió revisar el proyecto en busca de casos de uso
+faltantes, señalando específicamente que "hacen falta los CRUD de muchas
+cosas". Revisando las 25 hojas de `Submission/CU_eventos_completo.xlsx`
+contra `Work/ArchitecturalProposal.tex` y `Work/Summary.tex`, se confirmaron
+huecos reales: no existía ningún caso de uso para **crear/editar/publicar
+un evento** (CU-005 "Consultar evento" es de solo lectura), ni para
+**registro/login/recuperación de cuenta**, **roles y permisos (RBAC)**,
+**recintos y zonas/mapa de asientos** (referenciados por CU-001 y CU-026
+pero nunca definidos como entidad administrable), **proveedores externos**
+(mencionados como insumo de CU-016 pero sin CU propio), **conciliación
+financiera/reembolsos administrativos** (distinto de la cancelación
+disparada por el cliente en CU-003), ni **reportes/analítica** del evento
+para organizador/administrador. `Work/Summary.tex` incluso menciona
+"CRUDs del sistema" y "gestión general (usuarios, roles, configuración)"
+como funciones del Portal Web Administrativo sin que existiera un CU que
+las respaldara.
+
+**Decisión / resultado:** Se añadieron 7 casos de uso nuevos al final del
+libro (CU-026 a CU-032), cada uno con el mismo formato que los 25
+existentes (objetivo, actores, requisitos asociados, entradas/salidas,
+pre/post-condiciones, flujo básico de 8-10 pasos ACTOR/SISTEMA, flujos
+alternos, camino de excepción, atributos de calidad e infraestructura no
+trivial), generados programáticamente copiando el estilo/formato de
+`CU-016` para no perder ninguna convención visual del archivo:
+
+1. **CU-026 — Gestión de Eventos (CRUD):** crear/editar/publicar/cancelar
+   eventos, con validación de aforo vs. capacidad del recinto y de
+   traslape de fechas.
+2. **CU-027 — Gestión de Cuentas de Usuario:** registro, login,
+   recuperación de contraseña, edición de perfil, activar/desactivar
+   cuenta.
+3. **CU-028 — Gestión de Roles y Permisos:** CRUD de roles y su matriz de
+   permisos por módulo (RBAC).
+4. **CU-029 — Gestión de Recintos y Zonas:** CRUD de recintos, zonas y
+   capacidad por zona, insumo de CU-026.
+5. **CU-030 — Gestión de Proveedores:** CRUD de proveedores externos,
+   insumo de CU-016 (planificación logística).
+6. **CU-031 — Gestión de Pagos y Conciliación Financiera:** conciliación
+   de transacciones contra la pasarela de pagos y reembolsos
+   administrativos, distinto del flujo de cancelación iniciado por el
+   cliente (CU-003).
+7. **CU-032 — Gestión de Reportes y Analítica del Evento:** dashboards de
+   ventas/ocupación/personal/incidentes para organizador y administrador.
+
+El total del libro pasa de 25 a **32 casos de uso**. `Cronograma.md` y
+`TASKS.md` no se modificaron con esta entrada (son planificación, no
+casos de uso); si el reparto de atributos de calidad por integrante en
+`Cronograma.md` cambia por esto, actualizarlo aparte.
+
+**Alternativas consideradas:**
+- **No separar "Gestión de Pagos y Conciliación" de CU-003 (Cancelaciones
+  y devoluciones):** se descartó porque son operaciones con actores y
+  disparadores distintos (cliente vs. administrador financiero, evento
+  puntual vs. proceso periódico de conciliación) — fusionarlas habría
+  ocultado el atributo de calidad de trazabilidad financiera.
+- **Tratar Recintos/Zonas como un campo de texto libre dentro de CU-026 en
+  vez de un CU propio:** se descartó porque el mapa de zonas se reutiliza
+  entre eventos y tiene su propio ciclo de vida (crear, editar, dar de
+  baja), cumpliendo el criterio de entidad administrable independiente.
+
+**Riesgos técnicos:** El campo "Autor" de las 7 hojas nuevas quedó como
+`Hexacore` (placeholder de equipo) igual que la mayoría de las hojas
+existentes — falta asignar el dueño real por integrante, igual que ya
+estaba pendiente para el resto del archivo. Los pasos y flujos fueron
+redactados por el asistente a partir del contexto arquitectónico ya
+documentado, no por el equipo — conviene que cada integrante revise el CU
+que le corresponda antes de la entrega. No se validó aún si estos CU
+requieren ajustes en `Work/ArchitecturalProposal.tex` (p. ej. un
+microservicio de "Recintos" o de "Roles/Permisos" explícito) ni en los
+diagramas C4 — queda como tarea de seguimiento.
+
+**Participantes:** Samuel Contreras (vía asistente).
+
+---
+
 ## 2026-08-20 — Corrección de dirección: CU-013 y CU-015 sobrescritas con CU-003 y CU-005
 
 **Tipo:** Cambio arquitectónico
