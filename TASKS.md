@@ -33,7 +33,7 @@ policy, etc.) are in `Work/Notes/01. AS - Introducción al curso y reglas.md`.
 
 _(Add new tasks here as they're assigned, e.g. from the course syllabus or professor's instructions.)_
 
-- [ ] **Confirm project/team status vs. syllabus.** Clase 1's slides list
+- [x] **Confirm project/team status vs. syllabus.** Clase 1's slides list
       "tareas urgentes para la próxima clase": form the 5–7 person team via a
       Google Form (link in `Work/Notes/01...md`) and define **two** possible
       project ideas with full use-case listings + complexity justification.
@@ -59,7 +59,9 @@ _(Add new tasks here as they're assigned, e.g. from the course syllabus or profe
       attributes. (This was a suggestion inferred from Clase 5's material,
       not the literal graded "Ejercicio" slide of that class — the literal
       exercise, the Bitácora, is done. Still worth doing to strengthen the
-      SAD.)
+      SAD. Briefly marked done on `main` directly on 2026-08-20, then
+      reverted to pending after confirming with the user that the Utility
+      Tree work hasn't actually been done yet.)
 - [x] Migrate the architectural decisions already in
       `Work/ArchitecturalProposal.tex` ("Resumen de decisiones
       arquitectónicas") into a dated entry in `Work/BitacoraArquitectonica.md`,
