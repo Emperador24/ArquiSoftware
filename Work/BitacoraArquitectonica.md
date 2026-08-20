@@ -6,6 +6,14 @@ concepto, tal como lo pide el profesor en la Clase 5 ("Proceso de diseño
 arquitectónico 1"). **Se debe actualizar continuamente durante todo el
 semestre** — no reescribir entradas pasadas, solo añadir nuevas.
 
+> **Unión con la Bitácora Grupal.** Esta bitácora vive en el repositorio del
+> proyecto (`ArquiSoftware`) y es donde empezó el seguimiento real del
+> trabajo. El registro oficial de las **reuniones del equipo** (agenda,
+> acuerdos, tareas asignadas) vive aparte, en
+> [`BitacoraGrupal.md`](https://github.com/Emperador24/Bitacora-Hexacore/blob/main/BitacoraGrupal.md)
+> (repositorio `Bitacora-Hexacore`), cuya sección "Registro consolidado de
+> decisiones del equipo" resume y enlaza de vuelta a las entradas de aquí.
+
 Cada entrada nueva va arriba (orden cronológico inverso), con este formato:
 
 ```
