@@ -67,6 +67,32 @@ _(Add new tasks here as they're assigned, e.g. from the course syllabus or profe
       `Work/ArchitecturalProposal.tex` ("Resumen de decisiones
       arquitectónicas") into a dated entry in `Work/BitacoraArquitectonica.md`,
       including alternatives considered and risks. Done 2026-08-20.
+- [ ] **Ejercicio de clase 06 (Availability) — aplicar tácticas y patrones
+      de Disponibilidad al proyecto.** Última diapositiva de
+      `Work/Slides/06. Availability.pdf`: "Identifique tácticas y patrones
+      relevantes para los escenarios de Disponibilidad identificados en su
+      proyecto." No se especifica fecha límite ni si debe ir en el SAD,
+      `Work/ArchitecturalProposal.tex`, o la Bitácora — se recomienda
+      resolverlo en la Bitácora Arquitectónica (registrar el análisis) y,
+      si aplica, reflejar tácticas/patrones elegidos en
+      `ArchitecturalProposal.tex`. Ver detalle en
+      `Work/Notes/06. Availability.md`.
+- [ ] **Revisar clases 07–14 (Deployability, Performance, Modifiability,
+      Integrabilidad, Safety, Security, Testability, Usability) — ningún
+      "Ejercicio" explícito encontrado**, a diferencia de la clase 06. No
+      hay fechas de Entrega 1/Entrega 2/sustentación mencionadas en ninguna
+      de estas 9 clases. Sugerencia (no confirmada por el profesor): dado
+      el patrón de la clase 06, es razonable esperar que en algún momento
+      se pida el mismo ejercicio (aplicar tácticas/patrones al proyecto)
+      para los demás atributos de calidad — vale la pena preguntar en clase
+      o revisar si aparece en una diapositiva posterior no capturada aún.
+      Ver notas individuales en `Work/Notes/07...md` a `Work/Notes/14...md`.
+- [ ] **Revisar cobertura de Seguridad en el SAD.** La clase 12 (Security)
+      cubre en detalle autenticación/autorización (RBAC/DAC/MAC), cifrado
+      de datos, validación de entradas y no repudiación — vale la pena
+      confirmar que `Work/ArchitecturalProposal.tex` mencione
+      explícitamente estos mecanismos para el manejo de usuarios/pagos del
+      proyecto. Sugerencia, no un ejercicio confirmado del profesor.
 
 ## Workflow
 

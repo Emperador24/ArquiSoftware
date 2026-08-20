@@ -22,8 +22,15 @@ Work/                       Documentos de trabajo (fuentes .tex, en progreso)
 ├── Slides/                 Diapositivas de clase exportadas de Teams (PDF)
 └── Notes/                  Resúmenes por clase, generados a partir de Slides/
 
-Submission/                 Entregables finales (PDF compilados), listos para
-                             subir al curso — nunca se edita directamente aquí
+Submission/                 Entregables finales (PDF compilados y hojas de
+                             casos de uso), listos para subir al curso —
+                             nunca se edita directamente aquí
+
+Defense/                    Material de estudio personal para la sustentación
+                             oral — no es un entregable del curso
+├── DefenseGuide.tex         Explica cada archivo de Submission/ y anticipa
+└── DefenseGuide.pdf         preguntas del profesor; se regenera cuando
+                             Submission/ cambia de forma significativa
 
 TASKS.md                    Seguimiento de tareas, entregas y fechas
 CLAUDE.md                   Convenciones del proyecto para trabajar con Claude Code
