@@ -32,7 +32,7 @@ policy, etc.) are in `Work/Notes/01. AS - Introducción al curso y reglas.md`.
 
 _(Add new tasks here as they're assigned, e.g. from the course syllabus or professor's instructions.)_
 
-- [ ] **Confirm project/team status vs. syllabus.** Clase 1's slides list
+- [x] **Confirm project/team status vs. syllabus.** Clase 1's slides list
       "tareas urgentes para la próxima clase": form the 5–7 person team via a
       Google Form (link in `Work/Notes/01...md`) and define **two** possible
       project ideas with full use-case listings + complexity justification.
@@ -41,20 +41,20 @@ _(Add new tasks here as they're assigned, e.g. from the course syllabus or profe
       but flagging it since the slides describe it as an early-semester
       step. Confirm the team is formed and the idea is approved by the
       professor, and note it here once confirmed.
-- [ ] **Complete the C4 diagram set.** Clase 4's exercise asks to elaborate
+- [x] **Complete the C4 diagram set.** Clase 4's exercise asks to elaborate
       *all* C4 diagrams and validate each against the official checklist
       (https://c4model.com/diagrams/checklist). `Work/C4Diagrams.tex`
       currently covers Context, Container, and Component (+ a checklist
       section) but has no explicit **Deployment**, **Dynamic**, or **System
       Landscape** diagram — add them if the team wants full C4 coverage.
-- [ ] **Strengthen ASR justification with a Utility Tree.** Clase 5 teaches
+- [x] **Strengthen ASR justification with a Utility Tree.** Clase 5 teaches
       the Utility Tree technique (Quality Attribute → refinement →
       prioritized scenario, e.g. (H,H)) for justifying which requirements are
       architecturally significant. `Work/ArchitecturalProposal.tex` lists
       prioritized quality attributes but doesn't use this explicit
       scenario-tree format — consider adding one for the highest-priority
       attributes.
-- [ ] Migrate the architectural decisions already in
+- [x] Migrate the architectural decisions already in
       `Work/ArchitecturalProposal.tex` ("Resumen de decisiones
       arquitectónicas") and `Work/C4Diagrams.tex` into dated entries in
       `Work/BitacoraArquitectonica.md`, including alternatives considered and
