@@ -149,20 +149,20 @@ integrantes del equipo.
 \textbf{Caso de uso} & \textbf{Qué hace} & \textbf{Interfaz principal}\\
 \midrule
 \endhead
-CU-016 --- Gestión del Mercado Secundario \textit{(complejo)} &
+CU-006 --- Gestión del Mercado Secundario \textit{(complejo)} &
 Reventa de entradas: publicación, compra, pago, transferencia de propiedad, invalidación y
 regeneración de QR. &
 Portal Web del Cliente (+ App Móvil Cliente recibe el nuevo QR).\\[0.5em]
-CU-017 --- Gestión de Personal para Eventos \textit{(fusión de Administrar + Asignar Personal)} &
+CU-007 --- Gestión de Personal para Eventos \textit{(fusión de Administrar + Asignar Personal)} &
 CRUD de empleados y asignación a eventos con validación de rol, horario y conflictos. &
 Portal Web Administrativo (el empleado confirma desde la App Móvil del Personal).\\[0.5em]
-CU-018 --- Gestionar Cambios de Turno &
+CU-008 --- Gestionar Cambios de Turno &
 Solicitud, búsqueda de reemplazo y aprobación de cambios de turno. &
 App Móvil del Personal (solicitud) + Portal Web Administrativo (aprobación del supervisor).\\[0.5em]
-CU-019 --- Registrar Ingreso y Salida del Personal &
+CU-009 --- Registrar Ingreso y Salida del Personal &
 Control de asistencia vía QR/credencial y cálculo de horas trabajadas. &
 App Móvil del Personal.\\[0.5em]
-CU-020 --- Gestionar Evacuación ante Emergencias \textit{(complejo)} &
+CU-010 --- Gestionar Evacuación ante Emergencias \textit{(complejo)} &
 Activación, coordinación y cierre de un protocolo de evacuación en tiempo real. &
 Portal Web Administrativo (el supervisor activa y monitorea) + ambas apps móviles (reciben
 instrucciones/alertas).\\
@@ -170,7 +170,7 @@ instrucciones/alertas).\\
 \caption{Casos de uso asignados, con su interfaz principal de uso.}
 \end{longtable}
 
-Nótese que \textbf{CU-020 es el único caso que toca las tres interfaces a la vez} (web
+Nótese que \textbf{CU-010 es el único caso que toca las tres interfaces a la vez} (web
 administrativo para activar, ambas apps para recibir alertas) --- es el mejor argumento para
 defenderlo como el caso ``no trivial'' en infraestructura y atributos de calidad.
 
@@ -256,7 +256,7 @@ y los dos sistemas externos.
 \item \textbf{Nivel 2 (Contenedores):} zoom a las cuatro interfaces, el API Gateway, los
 microservicios y la infraestructura.
 \item \textbf{Nivel 3 (Componentes):} zoom interno al Servicio de Entradas y Mercado Secundario
-(el caso complejo CU-016).
+(el caso complejo CU-006).
 \end{itemize}
 
 Cada diagrama fue validado contra el checklist oficial de
@@ -268,7 +268,7 @@ alcance, leyenda y tecnología de cada relación), y se documenta en el archivo 
 
 Esta primera versión del proyecto define con claridad cuatro superficies de interacción --- dos
 portales web y dos variantes de aplicación móvil --- todas apoyadas en un único backend de
-microservicios. Los cinco casos de uso asignados (CU-016 a CU-020) cubren de forma cohesiva el
+microservicios. Los cinco casos de uso asignados (CU-006 a CU-010) cubren de forma cohesiva el
 ciclo completo del personal operativo (administración, asignación, cambios de turno, asistencia)
 y el proceso más complejo del sistema desde el punto de vista arquitectónico: la reventa segura
 de entradas. La incorporación explícita de las cuatro interfaces refuerza la justificación de
