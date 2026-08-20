@@ -23,6 +23,63 @@ Cada entrada nueva va arriba (orden cronológico inverso), con este formato:
 
 ---
 
+## 2026-08-20 — Corrección de dirección: CU-013 y CU-015 sobrescritas con CU-003 y CU-005
+
+**Tipo:** Cambio arquitectónico
+
+**Contexto:** El usuario indicó que la reasignación de la entrada anterior fue en la dirección
+equivocada: no se trataba de llevar `CU-013`/`CU-014` hacia las pestañas `CU3`/`CU5`, sino al
+revés, y con un destino distinto para el segundo caso. Se confirmó explícitamente con el usuario el
+resultado exacto antes de aplicarlo, incluyendo que esto **reemplaza y hace perder** el contenido
+que tenían `CU-013` y `CU-015`.
+
+**Decisión / resultado:** Se deshizo el cambio anterior (`CU3` y `CU5` vuelven a ser copia exacta
+de `CU-003` y `CU-005`, como antes de esa entrada) y, adicionalmente, se sobrescribió el contenido
+de la hoja **`CU-013`** con el de `CU-003` (Cancelaciones y devoluciones) y el de la hoja
+**`CU-015`** con el de `CU-005` (Consultar evento) — verificado celda por celda (0 diferencias) y
+sin solapes de celdas fusionadas. `CU-014` no se tocó en ningún momento y sigue siendo "Validar y
+entregar pedido", sin cambios.
+
+**Riesgos técnicos:** Esto reintroduce a propósito el mismo tipo de inconsistencia que se corrigió
+al inicio de la sesión: la pestaña `CU-013` ahora contiene internamente el Id `CU-003` (no
+`CU-013`), y la pestaña `CU-015` contiene el Id `CU-005`. Además, **se perdieron** de este archivo
+los casos de uso originales "Gestionar preparación del pedido" (antes en `CU-013`) y "Gestionar
+cancelaciones y reembolsos" (antes en `CU-015`) del módulo de Pedidos — no aparecen en ninguna otra
+pestaña del libro. Se conservan copias del archivo en cada paso intermedio en el scratchpad de la
+sesión por si hace falta recuperarlos. El equipo debería confirmar que esta pérdida es intencional
+antes de la entrega final.
+
+**Participantes:** Samuel Contreras (vía asistente).
+
+---
+
+## 2026-08-20 — Contenido de las pestañas finales CU3 y CU5 reasignado a petición del usuario
+
+**Tipo:** Cambio arquitectónico
+
+**Contexto:** Tras sincronizar las 5 pestañas finales `CU1`..`CU5` (ver entrada anterior) para que
+no contradijeran a `CU-001`..`CU-005`, el usuario pidió explícitamente reemplazar el contenido de
+dos de esas pestañas: `CU3` (hasta entonces copia de `CU-003`) por `CU-013`, y `CU5` (hasta entonces
+copia de `CU-005`) por `CU-014`.
+
+**Decisión / resultado:** Se reemplazó el contenido de la pestaña `CU3` por una copia exacta de
+`CU-013` (Gestionar preparación del pedido) y el de `CU5` por una copia exacta de `CU-014`
+(Validar y entregar pedido) — mismos valores, estilos, fusiones y alturas de fila, verificado
+celda por celda (0 diferencias). Las pestañas `CU1`, `CU2` y `CU4` quedaron sin cambios (siguen
+siendo copias de `CU-001`, `CU-002` y `CU-004`). Se conserva una copia del archivo previo a este
+cambio en el scratchpad de la sesión.
+
+**Riesgos técnicos:** No se conoce la razón de negocio detrás de esta reasignación puntual (fue una
+instrucción directa del usuario, no una corrección de un error detectado por el asistente) — el
+archivo sigue teniendo 30 pestañas en total (`CU-001`..`CU-025` más 5 duplicados bajo nombres de
+pestaña antiguos), de las cuales ahora `CU3` y `CU5` en realidad representan `CU-013` y `CU-014`.
+Si el equipo no recuerda por qué se hizo, vale la pena revisarlo antes de la entrega final para que
+no genere confusión.
+
+**Participantes:** Samuel Contreras (vía asistente).
+
+---
+
 ## 2026-08-20 — Sincronización de hojas obsoletas reaparecidas en CU_eventos_completo.xlsx
 
 **Tipo:** Análisis
