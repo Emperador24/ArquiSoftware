@@ -24,9 +24,10 @@ policy, etc.) are in `Work/Notes/01. AS - Introducción al curso y reglas.md`.
 | Task | File(s) | Status | Due | Notes |
 |---|---|---|---|---|
 | Project summary | Work/Summary.tex → Submission/Summary.pdf | submitted (2026-08-18) | — | Compiled, no LaTeX errors. |
-| Architectural proposal | Work/ArchitecturalProposal.tex → Submission/ArchitecturalProposal.pdf | submitted (2026-08-18) | — | Compiled, no LaTeX errors. |
-| C4 diagrams | Work/C4Diagrams.tex → Submission/C4Diagrams.pdf | submitted (2026-08-18) | — | Compiled, no LaTeX errors. See backlog: may be missing Deployment/Dynamic/System Landscape diagrams. |
-| Bitácora Arquitectónica | Work/BitacoraArquitectonica.md | in-progress (ongoing) | continuous | **New required deliverable** (from Clase 5): a permanently-updated log of meetings, design decisions, architectural changes, analyses, and PoCs. Created 2026-08-18; needs the team to migrate past decisions into dated entries and keep adding to it all semester — it's graded as part of the process, not a one-time submission. |
+| Architectural proposal | Work/ArchitecturalProposal.tex → Submission/ArchitecturalProposal.pdf | submitted (2026-08-18) | — | Compiled, no LaTeX errors. Re-checked 2026-08-20 against the Clase 2/3 exercise (prioritize QA alta/media/baja, define components/connections, explain how the architecture satisfies each QA) — already covers all three explicitly, no changes needed. |
+| C4 diagrams | Work/C4Diagrams.tex → Submission/C4Diagrams.pdf | submitted (2026-08-20) | — | Now covers all 6 C4 diagrams (Context, Container, Component, System Landscape, Dynamic, Deployment) per the Clase 4 exercise; Level 4/Code deliberately excluded with justification. Checklist section rewritten to cover every official c4model.com item for all 6 diagrams. Compiled clean, 16 pages. |
+| Bitácora Arquitectónica | Work/BitacoraArquitectonica.md | in-progress (ongoing) | continuous | **New required deliverable** (from Clase 5): a permanently-updated log of meetings, design decisions, architectural changes, analyses, and PoCs. Created 2026-08-18; foundational decisions from ArchitecturalProposal.tex migrated in as a dated entry on 2026-08-20 (with alternatives/risks). Keep adding to it all semester — it's graded as part of the process, not a one-time submission. |
+| Use-case spreadsheet | Submission/CU_eventos_completo.xlsx | submitted (2026-08-20) | — | 25 use cases, renumbered CU-001..CU-025, all ≥8 steps, all with quality-attribute + infrastructure sections. See Bitácora entries from 2026-08-20 for details. |
 
 ## Backlog / new tasks
 
@@ -43,22 +44,28 @@ _(Add new tasks here as they're assigned, e.g. from the course syllabus or profe
       professor, and note it here once confirmed.
 - [x] **Complete the C4 diagram set.** Clase 4's exercise asks to elaborate
       *all* C4 diagrams and validate each against the official checklist
-      (https://c4model.com/diagrams/checklist). `Work/C4Diagrams.tex`
-      currently covers Context, Container, and Component (+ a checklist
-      section) but has no explicit **Deployment**, **Dynamic**, or **System
-      Landscape** diagram — add them if the team wants full C4 coverage.
-- [x] **Strengthen ASR justification with a Utility Tree.** Clase 5 teaches
+      (https://c4model.com/diagrams/checklist). Done 2026-08-20: added System
+      Landscape, Dynamic, and Deployment diagrams to `Work/C4Diagrams.tex`
+      (Context/Container/Component already existed); fixed a stale CU-016→
+      CU-006 reference left over from before the use-case renumbering;
+      rewrote the checklist section against every official item; recompiled
+      clean (16 pages) and re-submitted the PDF.
+- [ ] **Strengthen ASR justification with a Utility Tree.** Clase 5 teaches
       the Utility Tree technique (Quality Attribute → refinement →
       prioritized scenario, e.g. (H,H)) for justifying which requirements are
       architecturally significant. `Work/ArchitecturalProposal.tex` lists
       prioritized quality attributes but doesn't use this explicit
       scenario-tree format — consider adding one for the highest-priority
-      attributes.
+      attributes. (This was a suggestion inferred from Clase 5's material,
+      not the literal graded "Ejercicio" slide of that class — the literal
+      exercise, the Bitácora, is done. Still worth doing to strengthen the
+      SAD. Briefly marked done on `main` directly on 2026-08-20, then
+      reverted to pending after confirming with the user that the Utility
+      Tree work hasn't actually been done yet.)
 - [x] Migrate the architectural decisions already in
       `Work/ArchitecturalProposal.tex` ("Resumen de decisiones
-      arquitectónicas") and `Work/C4Diagrams.tex` into dated entries in
-      `Work/BitacoraArquitectonica.md`, including alternatives considered and
-      risks (not just the final decision).
+      arquitectónicas") into a dated entry in `Work/BitacoraArquitectonica.md`,
+      including alternatives considered and risks. Done 2026-08-20.
 
 ## Workflow
 
