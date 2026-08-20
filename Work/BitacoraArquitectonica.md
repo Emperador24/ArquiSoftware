@@ -23,6 +23,74 @@ Cada entrada nueva va arriba (orden cronológico inverso), con este formato:
 
 ---
 
+## 2026-08-20 — Sincronización de hojas obsoletas reaparecidas en CU_eventos_completo.xlsx
+
+**Tipo:** Análisis
+
+**Contexto:** Antes de comitear el trabajo de la sesión se detectó que
+`Submission/CU_eventos_completo.xlsx` había cambiado en disco sin
+intervención del asistente: pasó de 25 a 30 hojas. Las 5 hojas nuevas
+(`CU1`..`CU5`) resultaron ser copias **previas a todas las correcciones**
+de esta sesión — mismo contenido que `CU-001`..`CU-005` pero con el
+"Proyecto" sin estandarizar (`Organización de eventos - HEXACORE` en vez de
+`Sistema Integral de Gestión de Eventos`) y la versión en `1.0` en vez de
+`2.0`. La causa más probable es una sincronización de OneDrive que fusionó
+una copia en caché anterior a la reorganización. No había ningún archivo de
+conflicto de OneDrive junto al original que lo confirmara.
+
+**Decisión / resultado:** Se consultó al usuario antes de tocar el archivo.
+En vez de borrar las 5 hojas repetidas, se sincronizó su contenido para que
+cada una sea una copia exacta (valores, estilos, fusiones de celdas y
+alturas de fila) de su hoja corregida correspondiente
+(`CU1`←`CU-001`, ..., `CU5`←`CU-005`), verificado celda por celda (0
+diferencias) y sin solapes de celdas fusionadas. El archivo quedó con 30
+hojas: las 25 `CU-001`..`CU-025` más 5 duplicados exactos bajo el nombre de
+pestaña antiguo. Se conserva una copia del archivo de 30 hojas sin
+sincronizar en el scratchpad de la sesión.
+
+**Riesgos técnicos:** El archivo sigue teniendo pestañas duplicadas
+(`CU1`..`CU5` junto a `CU-001`..`CU-005`) — ya no contradictorias entre sí,
+pero sí redundantes. Si vuelve a ocurrir una sincronización similar, o si el
+equipo decide que las pestañas duplicadas no deberían entregarse así,
+convendría eliminarlas explícitamente en vez de mantenerlas sincronizadas.
+También vale la pena que el usuario revise la configuración de sincronización
+de OneDrive para esta carpeta, ya que el archivo cambió sin que nadie lo
+editara conscientemente.
+
+**Participantes:** Samuel Contreras (vía asistente).
+
+---
+
+## 2026-08-20 — Guía de estudio para la sustentación + referencias CU obsoletas en Summary.tex
+
+**Tipo:** Análisis
+
+**Contexto:** Al preparar material de estudio para la sustentación se encontró que
+`Work/Summary.tex` (el resumen ejecutivo del proyecto, ya en `Submission/Summary.pdf`) todavía
+citaba los 5 casos de uso del módulo de Personal con la numeración antigua (`CU-016` a `CU-020`),
+previa a la renumeración de casos de uso a `CU-001..CU-025` hecha antes en esta misma sesión. Esto
+dejaba dos documentos ya entregados (`Summary.pdf` y `CU_eventos_completo.xlsx`) contradiciéndose
+sobre el ID de los mismos casos de uso.
+
+**Decisión / resultado:** Se corrigieron las 8 referencias de `CU-016..CU-020` a `CU-006..CU-010`
+en `Work/Summary.tex`, se recompiló sin errores y se reemplazó `Submission/Summary.pdf`. Además, se
+creó `Defense/DefenseGuide.tex` → `Defense/DefenseGuide.pdf`: una guía de estudio personal (no es
+un entregable del curso) que explica, archivo por archivo, todo lo que hay en `Submission/`
+(Summary, ArchitecturalProposal, C4Diagrams, CU_eventos_completo.xlsx), con preguntas que el
+profesor podría hacer y los puntos delicados que el estudiante debe poder explicar con honestidad
+(Árbol de Utilidad pendiente, posible duplicación Personal/Logística en los casos de uso,
+infraestructura de despliegue propuesta por el asistente aún sin confirmar por el equipo) — en
+línea con la regla del curso de que cada estudiante debe poder explicar cada término y decisión
+generada con ayuda de IA.
+
+**Riesgos técnicos:** Ninguno nuevo — el fix de `Summary.tex` es puramente de consistencia de IDs.
+La guía de defensa puede quedar desactualizada si `Submission/` cambia después sin regenerarla; se
+documentó esa dependencia en `CLAUDE.md` y `TASKS.md`.
+
+**Participantes:** Samuel Contreras (vía asistente).
+
+---
+
 ## 2026-08-20 — Diagramas C4 completados: Panorama de Sistemas, Dinámico y Despliegue
 
 **Tipo:** Cambio arquitectónico

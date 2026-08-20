@@ -19,6 +19,11 @@ Software Architecture course project: "Sistema Integral de Gestión de Eventos"
 - `Submission/` — final files ready to hand in, one subfolder or file set per
   deliverable. Nothing goes here until it's actually finished; don't put
   drafts in this folder.
+- `Defense/` — personal study material for the oral sustentación (not a
+  course deliverable, never gets submitted). `Defense/DefenseGuide.tex` →
+  `DefenseGuide.pdf` explains every file in `Submission/` and lists likely
+  professor questions; regenerate it whenever `Submission/` changes
+  meaningfully so it doesn't go stale.
 - `TASKS.md` — the task tracker for this project. Read it at the start of a
   session to see what's pending, and update it (status, new tasks, due dates)
   whenever something changes — see the Workflow section in that file.
