@@ -18,7 +18,12 @@ Software Architecture course project: "Sistema Integral de Gestión de Eventos"
     revisits an architectural decision; never rewrite past entries.
 - `Submission/` — final files ready to hand in, one subfolder or file set per
   deliverable. Nothing goes here until it's actually finished; don't put
-  drafts in this folder.
+  drafts in this folder. **Every `Work/*.tex` file compiles to a PDF that
+  belongs in `Submission/`, not `Work/`** — this applies even to internal
+  team documents that aren't a graded course deliverable (e.g. an
+  organizational PDF for the team). `Work/` keeps only the `.tex` source;
+  once it compiles cleanly, move/copy the PDF into `Submission/` and delete
+  any stray copy left in `Work/`.
 - `Defense/` — personal study material for the oral sustentación (not a
   course deliverable, never gets submitted). `Defense/DefenseGuide.tex` →
   `DefenseGuide.pdf` explains every file in `Submission/` and lists likely

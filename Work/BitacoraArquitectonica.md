@@ -31,6 +31,129 @@ Cada entrada nueva va arriba (orden cronológico inverso), con este formato:
 
 ---
 
+## 2026-08-20 — Reparto de CU-021 a CU-032 confirmado con el equipo
+
+**Tipo:** Reunión
+
+**Contexto:** El reparto de los 12 casos de uso restantes (CU-021 a
+CU-032, entre ellos el bloque de Parqueaderos y los 7 CRUD añadidos
+previamente) había sido una **propuesta del asistente**, no una
+instrucción explícita del usuario caso por caso: Daniel Cristancho +
+CU-021–023, Samuel Emperador + CU-024–026, Sebastián Sánchez + CU-027–029,
+Diego Coronado + CU-030–032 (ver `Work/DistribucionCasosUso.pdf`). Se
+ofrecieron varias vías para validarlo con el resto del equipo (dejarlo
+como punto pendiente en `BitacoraGrupal.md`, abrir un issue en el
+repositorio `Bitacora-Hexacore`, o redactar un mensaje para que el usuario
+lo enviara); el usuario indicó que **ya lo había confirmado directamente
+con el equipo** por su cuenta.
+
+**Decisión / resultado:** El reparto queda **confirmado y definitivo**, sin
+cambios respecto a lo propuesto. Se actualiza `TASKS.md`: la fila del
+spreadsheet de casos de uso vuelve a `submitted`, y se cierra el pendiente
+de "confirmar con el equipo" en el backlog. No se modificó
+`Submission/CU_eventos_completo.xlsx` ni `Work/DistribucionCasosUso.pdf`
+en esta entrada, ya que el contenido de ambos ya reflejaba este reparto.
+
+**Riesgos técnicos:** Esta confirmación quedó registrada solo de palabra
+del usuario dentro de esta conversación — no hay un registro externo
+(mensaje de equipo, acta de reunión) enlazado desde aquí. Si el curso pide
+evidencia de la reunión/acuerdo del equipo, conviene complementar esta
+entrada con un acta en `BitacoraGrupal.md` (repositorio `Bitacora-Hexacore`).
+
+**Participantes:** Samuel Contreras (vía asistente); equipo completo
+(Daniel Cristancho, Samuel Emperador, Sebastián Sánchez, Diego Coronado)
+según lo reportado por el usuario.
+
+---
+
+## 2026-08-20 — Campo "Autor" actualizado con los nombres reales del equipo
+
+**Tipo:** Cambio arquitectónico
+
+**Contexto:** El usuario pidió actualizar el campo "Autor" (celda B5) de
+`Submission/CU_eventos_completo.xlsx`, que en las 32 hojas decía
+`Hexacore`/`HEXACORE` (nombre de equipo genérico), con los nombres reales
+ya conocidos por la entrada anterior de distribución de casos de uso.
+
+**Decisión / resultado:** Se actualizó B5 en las 32 hojas (`CU-001` a
+`CU-032`) con el dueño real, según el mismo reparto documentado en la
+entrada anterior y en `Work/DistribucionCasosUso.pdf`:
+- CU-001..005, CU-021..023 → **Daniel Cristancho**.
+- CU-006..010, CU-024..026 → **Samuel Emperador** (ya decía "Samuel
+  Emperador" en CU-006..010, sin cambios ahí).
+- CU-011..015, CU-027..029 → **Sebastián Sánchez**.
+- CU-016..020, CU-030..032 → **Diego Coronado**.
+
+No se tocó ningún otro campo (nombre, versión, fecha, contenido del flujo,
+etc.), ni las hojas obsoletas `CU1`..`CU5` mencionadas en entradas
+anteriores — de hecho, al releer el archivo para esta operación se
+confirmó que esas pestañas duplicadas **ya no existen** en el libro (32
+hojas en total, `CU-001` a `CU-032`); no fue un cambio de esta sesión, el
+archivo cambió en disco por fuera de esta conversación en algún punto
+anterior.
+
+**Riesgos técnicos:** Esta asignación de "Autor" para CU-021..CU-032 sigue
+heredando el mismo supuesto no confirmado de la entrada anterior: el
+reparto de esos 12 casos de uso fue una propuesta del asistente, no una
+instrucción explícita del usuario caso por caso. Si el equipo decide
+repartirlos distinto, hay que volver a correr esta actualización.
+
+**Participantes:** Samuel Contreras (vía asistente).
+
+---
+
+## 2026-08-20 — Distribución de los 32 casos de uso entre los 4 integrantes
+
+**Tipo:** Análisis
+
+**Contexto:** El usuario dio, por primera vez, los nombres reales del
+equipo y su dueño explícito para los primeros 20 casos de uso: **Daniel
+Cristancho** (CU-001 a CU-005), **Samuel Emperador** (CU-006 a CU-010),
+**Sebastián Sánchez** (CU-011 a CU-015) y **Diego Coronado** (CU-016 a
+CU-020). Pidió repartir entre los cuatro los 12 casos de uso restantes
+(CU-021 a CU-032, que incluyen el bloque de Parqueaderos y los 7 CRUD
+añadidos en la entrada anterior) y generar un PDF con encargado, nombre y
+descripción de cada caso de uso.
+
+**Decisión / resultado:** Se repartieron los 12 CU restantes en bloques
+contiguos de 3, para que cada integrante termine con 8 casos de uso
+temáticamente agrupados (más fácil de defender en la sustentación que una
+asignación dispersa):
+- Daniel Cristancho: + CU-021, CU-022, CU-023 (Parqueadero: reserva,
+  ingreso/salida de vehículos, asignación de espacios).
+- Samuel Emperador: + CU-024, CU-025, CU-026 (Parqueadero: cobro, control
+  de ocupación; y Gestión de Eventos CRUD).
+- Sebastián Sánchez: + CU-027, CU-028, CU-029 (Cuentas de Usuario, Roles y
+  Permisos, Recintos y Zonas).
+- Diego Coronado: + CU-030, CU-031, CU-032 (Proveedores, Pagos y
+  Conciliación Financiera, Reportes y Analítica).
+
+Se generó `Work/DistribucionCasosUso.tex` → `Work/DistribucionCasosUso.pdf`
+(7 páginas), con una tabla resumen de la distribución y, por integrante,
+una tabla con Id, nombre y descripción (tomada del campo "Objetivo en
+Contexto" de cada hoja de `CU_eventos_completo.xlsx`) de sus 8 casos de
+uso. No es un entregable del curso — es un documento de organización
+interna del equipo.
+
+**Alternativas consideradas:**
+- **Reparto round-robin** (CU-021→Daniel, CU-022→Samuel, CU-023→Sebastián,
+  CU-024→Diego, CU-025→Daniel, …): se descartó porque dispersa los CU de
+  un mismo bloque temático (p. ej. Parqueadero) entre varias personas,
+  dificultando que cada integrante defienda su módulo como una unidad
+  coherente en la sustentación.
+
+**Riesgos técnicos:** El reparto de CU-021 a CU-032 fue una **propuesta del
+asistente**, no una instrucción explícita del usuario por caso — el equipo
+debería confirmarla. El campo "Autor" dentro de `CU_eventos_completo.xlsx`
+sigue diciendo `Hexacore` para todas las hojas y no se actualizó con estos
+nombres reales en esta entrada (queda como tarea en `TASKS.md`).
+
+**Participantes:** Samuel Contreras (vía asistente); nombres del equipo
+(Daniel Cristancho, Samuel Emperador, Sebastián Sánchez, Diego Coronado)
+dados por el usuario.
+
+---
+
 ## 2026-08-20 — 7 casos de uso nuevos (CU-026 a CU-032) para cerrar huecos de CRUD
 
 **Tipo:** Cambio arquitectónico

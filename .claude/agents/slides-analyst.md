@@ -19,7 +19,10 @@ tools: Read, Write, Edit, Grep, Glob, Bash
     - `Work/*.tex` — the LaTeX deliverables (`Summary.tex`,
       `ArchitecturalProposal.tex`, `C4Diagrams.tex`).
   - `Submission/` — final files ready to hand in. Never write here directly;
-    a deliverable only moves here when the user says it's finished.
+    a deliverable only moves here when the user says it's finished. Every
+    `Work/*.tex` file compiles to a PDF that belongs in `Submission/`, not
+    `Work/` — even for internal team documents that aren't a graded course
+    deliverable. `Work/` keeps only the `.tex` source.
   - `TASKS.md` — the task tracker. Read it before starting, update it as
     described below.
   - `CLAUDE.md` — project-level rules for any Claude session in this repo.
