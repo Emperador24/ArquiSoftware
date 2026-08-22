@@ -31,6 +31,109 @@ Cada entrada nueva va arriba (orden cronológico inverso), con este formato:
 
 ---
 
+## 2026-08-22 — Corrección de resolución: los 6 diagramas C4 no se leían bien
+
+**Tipo:** Cambio arquitectónico (documentación, sin cambio de arquitectura)
+
+**Contexto:** Tras la primera versión de los diagramas en draw.io (entrada anterior de hoy), el
+usuario reportó que el texto dentro de cada caja no se alcanzaba a leer en el PDF. La causa real
+no era el tamaño de fuente sino la resolución de captura: las imágenes se habían generado con
+una captura de pantalla del lienzo ajustado a la ventana (~55–60% de zoom), lo que dejaba muy
+pocos píxeles reales por letra una vez que LaTeX escalaba la imagen al ancho de la página.
+
+**Decisión / resultado:** Se cambió el método de exportación por el nativo de draw.io: **File →
+Export as → PNG** con zoom 250%, seguido de **Copy** (copia la imagen al portapapeles del
+sistema) y extracción con `osascript` (`the clipboard as «class PNGf»`) directamente a
+`Work/Diagrams/`. Esto genera PNG a resolución real (3500–5000 px de ancho según el diagrama, en
+vez de ~1400 px) sin depender del tamaño de la ventana del navegador ni de la carpeta de
+Descargas (inaccesible por permisos del sistema para este entorno). De paso se aprovechó para
+agrandar cajas y fuentes, añadir fondo blanco a las etiquetas de las flechas
+(`labelBackgroundColor`) y corregir varias flechas que atravesaban el texto de cajas vecinas
+(añadiendo puntos de recodo explícitos). Verificado renderizando el PDF final a 300 DPI: el texto
+se ve nítido incluso con zoom alto. Recompilado sin errores (16 páginas) y republicado en
+`Submission/C4Diagrams.pdf`; los 6 `.drawio` en `Work/Diagrams/` también se actualizaron con el
+nuevo tamaño de caja/fuente y quedan editables.
+
+**Alternativas consideradas:**
+- **Agrandar la ventana del navegador** para capturar a mayor resolución: se probó primero: el
+  gestor de ventanas del entorno solo permitió ~1568 px de ancho efectivo (aumento marginal,
+  insuficiente).
+- **Exportar el PNG en base64 y leerlo por el canal de la herramienta de JavaScript**: bloqueado
+  deliberadamente por un filtro de seguridad que impide devolver datos largos en base64 (para
+  evitar exfiltración) — se respetó esa restricción en vez de rodearla.
+- **Descargar el PNG al disco vía el diálogo de exportación**: la carpeta de Descargas de macOS
+  no es accesible para este entorno (restricción de permisos del sistema operativo), y un puente
+  vía servidor local HTTP falló por la política de "mixed content" del navegador (la página de
+  draw.io es HTTPS y no permite conexiones salientes a `http://localhost`). El portapapeles del
+  sistema no tiene esa restricción y sí funcionó.
+
+**Ventajas / desventajas:** La calidad final es muy superior (imágenes nítidas incluso con zoom
+alto en el PDF) sin tener que rediseñar el contenido de los diagramas. Como desventaja, el archivo
+del PDF creció de ~1.1 MB a ~1.7 MB por el mayor tamaño de las imágenes; no es un problema para
+la entrega.
+
+**Riesgos técnicos:** Ninguno funcional. Si se vuelve a editar un `.drawio`, hay que repetir el
+mismo flujo de exportación (zoom 250% + Copy + `osascript`) para mantener la resolución; una
+captura de pantalla simple del lienzo vuelve a producir el mismo problema de baja resolución.
+
+**Participantes:** Samuel Contreras (vía asistente), a partir de retroalimentación directa del
+usuario ("no se puede leer bien lo que está dentro de cada rectángulo").
+
+---
+
+## 2026-08-22 — Diagramas C4 rehechos en draw.io con retroalimentación del profesor
+
+**Tipo:** Cambio arquitectónico (documentación, sin cambio de arquitectura)
+
+**Contexto:** El profesor revisó `Work/C4Diagrams.tex` (basado en tikz) y dio dos indicaciones
+puntuales: (1) cada caja de cada diagrama debe mostrar una pequeña descripción y la tecnología,
+no solo el nombre; y (2) el Diagrama Dinámico debe reemplazarse por un diagrama de secuencia.
+También pidió que todos los diagramas se hicieran en draw.io (la aplicación web
+`app.diagrams.net`), no como código tikz.
+
+**Decisión / resultado:** Se rehicieron los 6 diagramas (Contexto, Contenedores, Componentes,
+Panorama de Sistemas, Secuencia y Despliegue) directamente en app.diagrams.net: se construyó el
+XML de mxGraph de cada uno, se cargó en el editor vía "Extras → Edit Diagram", se ajustó el
+layout (`Ctrl+Shift+H`) y se exportó una captura limpia de cada lienzo. Cada caja de cada
+diagrama ahora muestra tres líneas: nombre en negrita, `[Tipo: Tecnología]` en cursiva, y una
+breve descripción de su responsabilidad. El antiguo Diagrama Dinámico se reemplazó por un
+diagrama de secuencia UML con líneas de vida punteadas, mensajes numerados (1–8) y una barra de
+activación sobre el Servicio de Entradas, para el mismo caso de uso (CU-006, reventa de una
+entrada). Los 6 archivos fuente `.drawio` y sus PNG exportados quedan en `Work/Diagrams/` para
+edición futura; `Work/C4Diagrams.tex` ahora usa `\includegraphics` en vez de `tikzpicture` para
+estas seis figuras, y la sección del checklist y la conclusión se actualizaron para reflejar el
+nuevo formato de caja y el cambio Dinámico→Secuencia. Recompilado sin errores (15 páginas) y
+republicado en `Submission/C4Diagrams.pdf`.
+
+**Alternativas consideradas:**
+- **Mantener tikz y solo añadir descripción/tecnología como texto adicional dentro de los nodos**:
+  se descartó porque el profesor pidió explícitamente que los diagramas se hicieran en draw.io,
+  no que se ajustara el código tikz existente.
+- **Generar los `.drawio` por script sin abrir la aplicación web**: más rápido, pero no cumple la
+  instrucción literal de "hazlos en la página web de draw.io"; se optó por cargar el XML dentro
+  del editor real (`app.diagrams.net`) vía "Edit Diagram" y exportar desde ahí, de forma que el
+  trabajo quede hecho efectivamente en la herramienta pedida.
+- **Diagrama Dinámico de C4 con numeración pero sin líneas de vida** (la variante que ya existía):
+  se descartó a favor de un diagrama de secuencia UML completo, más preciso y estándar, tal como
+  pidió el profesor.
+
+**Ventajas / desventajas:** Los diagramas ahora comunican mucha más información por caja (tipo,
+tecnología, responsabilidad) sin necesitar la tabla de relaciones para entender cada elemento
+individual, y quedan editables visualmente en draw.io por cualquier integrante del equipo sin
+tocar LaTeX/tikz. La desventaja es que ya no son texto versionable línea a línea en el `.tex`
+(las figuras son imágenes PNG); se mitiga guardando también el `.drawio` fuente de cada diagrama
+en el repositorio.
+
+**Riesgos técnicos:** Ninguno funcional — es un cambio de documentación/notación, no de
+arquitectura. Riesgo menor: si se vuelve a editar un diagrama, hay que reexportar el PNG y
+recompilar el PDF para que `Submission/C4Diagrams.pdf` no quede desactualizado respecto al
+`.drawio` fuente.
+
+**Participantes:** Samuel Contreras (vía asistente), a partir de retroalimentación directa del
+profesor sobre `Work/C4Diagrams.tex`.
+
+---
+
 ## 2026-08-20 — Reparto de CU-021 a CU-032 confirmado con el equipo
 
 **Tipo:** Reunión

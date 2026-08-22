@@ -1,0 +1,45 @@
+<mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <mxCell id="p1" value="&lt;b&gt;Cliente&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Persona]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:12px&quot;&gt;Compra y revende entradas, reserva parqueadero&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#073B6F;fontColor=#ffffff;arcSize=12;fontSize=14;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="40" y="40" width="230" height="130" as="geometry" />
+    </mxCell>
+    <mxCell id="p2" value="&lt;b&gt;Organizador&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Persona]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:12px&quot;&gt;Crea eventos, asigna personal y coordina la operación&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#073B6F;fontColor=#ffffff;arcSize=12;fontSize=14;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="320" y="40" width="230" height="130" as="geometry" />
+    </mxCell>
+    <mxCell id="p3" value="&lt;b&gt;Empleado&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Persona]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:12px&quot;&gt;Consulta turnos y registra ingreso/salida&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#073B6F;fontColor=#ffffff;arcSize=12;fontSize=14;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="600" y="40" width="230" height="130" as="geometry" />
+    </mxCell>
+    <mxCell id="p4" value="&lt;b&gt;Administrador&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Persona]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:12px&quot;&gt;Administra usuarios, personal y configuración&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#073B6F;fontColor=#ffffff;arcSize=12;fontSize=14;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="880" y="40" width="230" height="130" as="geometry" />
+    </mxCell>
+    <mxCell id="p5" value="&lt;b&gt;Supervisor de Emergencia&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Persona]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:12px&quot;&gt;Activa y coordina el protocolo de evacuación&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#073B6F;fontColor=#ffffff;arcSize=12;fontSize=14;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="1160" y="40" width="250" height="130" as="geometry" />
+    </mxCell>
+
+    <mxCell id="sys" value="&lt;b&gt;Sistema Integral de Gestión de Eventos&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Sistema de software]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:13px&quot;&gt;Centraliza boletería, mercado secundario, personal, parqueaderos y operación de eventos&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0B4884;fontColor=#ffffff;arcSize=10;fontSize=17;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+      <mxGeometry x="470" y="280" width="580" height="190" as="geometry" />
+    </mxCell>
+
+    <mxCell id="ext1" value="&lt;b&gt;Pasarela de Pagos&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Sistema externo]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:12px&quot;&gt;Procesa cobros, reembolsos y liquidaciones&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6B6B6B;fontColor=#ffffff;arcSize=12;fontSize=14;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="220" y="600" width="270" height="130" as="geometry" />
+    </mxCell>
+    <mxCell id="ext2" value="&lt;b&gt;Proveedor de Notificaciones&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Sistema externo]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:12px&quot;&gt;Envía push, correo y SMS&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6B6B6B;fontColor=#ffffff;arcSize=12;fontSize=14;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="1160" y="600" width="290" height="130" as="geometry" />
+    </mxCell>
+
+    <mxCell id="e1" value="compra / revende [HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.15;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p1" target="sys">
+      <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="155" y="200"/><mxPoint x="557" y="200"/></Array></mxGeometry>
+    </mxCell>
+    <mxCell id="e2" value="gestiona eventos [HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="p2" target="sys"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e3" value="consulta turnos [HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="p3" target="sys"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e4" value="administra [HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="p4" target="sys"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e5" value="coordina evacuación [HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="p5" target="sys">
+      <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1285" y="200"/><mxPoint x="963" y="200"/></Array></mxGeometry>
+    </mxCell>
+    <mxCell id="e6" value="procesa pagos [HTTPS/REST]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="sys" target="ext1"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e7" value="envía alertas [HTTPS/REST]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="sys" target="ext2"><mxGeometry relative="1" as="geometry" /></mxCell>
+  </root>
+</mxGraphModel>

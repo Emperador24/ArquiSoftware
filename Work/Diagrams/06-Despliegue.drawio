@@ -1,0 +1,61 @@
+<mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1300" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <mxCell id="usuario" value="&lt;b&gt;Dispositivo del Usuario&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Nodo: Navegador / App móvil]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Ejecuta la SPA o la app nativa&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#073B6F;fontColor=#ffffff;arcSize=10;fontSize=14;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="760" y="20" width="340" height="120" as="geometry" />
+    </mxCell>
+
+    <mxCell id="cdn" value="&lt;b&gt;Nodo: CDN / Edge&lt;/b&gt;&lt;br&gt;&lt;i&gt;[ej. CloudFront]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Sirve los assets estáticos de la App Web&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#F5F5F5;strokeColor=#666666;fontColor=#000000;arcSize=10;fontSize=13;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="220" y="240" width="320" height="130" as="geometry" />
+    </mxCell>
+    <mxCell id="edge" value="&lt;b&gt;Nodo: Balanceador + API Gateway&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Instancia gestionada, multi-AZ]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Enruta y balancea las solicitudes de la API&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#F5F5F5;strokeColor=#666666;fontColor=#000000;arcSize=10;fontSize=13;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="1260" y="240" width="380" height="130" as="geometry" />
+    </mxCell>
+
+    <mxCell id="k8s" value="Nodo: Clúster de Aplicación [Kubernetes, autoescalado]" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=10;fillColor=#EDE7F6;strokeColor=#5E35B1;fontColor=#000000;fontStyle=1;fontSize=14;arcSize=6;" vertex="1" parent="1">
+      <mxGeometry x="80" y="450" width="1780" height="260" as="geometry" />
+    </mxCell>
+    <mxCell id="p1" value="&lt;b&gt;Entradas y Mercado Secundario&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Instancia: microservicio]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Réplicas autoescaladas&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#78A8D1;fontColor=#000000;arcSize=10;fontSize=12;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+      <mxGeometry x="120" y="520" width="320" height="150" as="geometry" />
+    </mxCell>
+    <mxCell id="p2" value="&lt;b&gt;Personal&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Instancia: microservicio]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Réplicas autoescaladas&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#78A8D1;fontColor=#000000;arcSize=10;fontSize=12;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+      <mxGeometry x="480" y="520" width="320" height="150" as="geometry" />
+    </mxCell>
+    <mxCell id="p3" value="&lt;b&gt;Eventos y Emergencias&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Instancia: microservicio]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Réplicas autoescaladas&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#78A8D1;fontColor=#000000;arcSize=10;fontSize=12;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+      <mxGeometry x="840" y="520" width="320" height="150" as="geometry" />
+    </mxCell>
+    <mxCell id="p4" value="&lt;b&gt;Parqueaderos&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Instancia: microservicio]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Réplicas autoescaladas&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#78A8D1;fontColor=#000000;arcSize=10;fontSize=12;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+      <mxGeometry x="1200" y="520" width="320" height="150" as="geometry" />
+    </mxCell>
+    <mxCell id="p5" value="&lt;b&gt;Autenticación&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Instancia: microservicio]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Réplicas autoescaladas&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=#78A8D1;fontColor=#000000;arcSize=10;fontSize=12;align=center;verticalAlign=middle;spacing=6;" vertex="1" parent="1">
+      <mxGeometry x="1560" y="520" width="280" height="150" as="geometry" />
+    </mxCell>
+
+    <mxCell id="bdnodo" value="&lt;b&gt;Nodo: Clúster de BD&lt;/b&gt;&lt;br&gt;&lt;i&gt;[PostgreSQL, primario + réplica]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Persistencia de cada dominio&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#F5F5F5;strokeColor=#666666;fontColor=#000000;arcSize=10;fontSize=13;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="80" y="820" width="360" height="130" as="geometry" />
+    </mxCell>
+    <mxCell id="redisnodo" value="&lt;b&gt;Nodo: Clúster Redis&lt;/b&gt;&lt;br&gt;&lt;i&gt;[modo Sentinel]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Caché y bloqueos de concurrencia&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#F5F5F5;strokeColor=#666666;fontColor=#000000;arcSize=10;fontSize=13;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="500" y="820" width="360" height="130" as="geometry" />
+    </mxCell>
+    <mxCell id="colanodo" value="&lt;b&gt;Nodo: Clúster de Mensajería&lt;/b&gt;&lt;br&gt;&lt;i&gt;[RabbitMQ/Kafka, 3 brokers]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Eventos de dominio asíncronos&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#F5F5F5;strokeColor=#666666;fontColor=#000000;arcSize=10;fontSize=13;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="920" y="820" width="360" height="130" as="geometry" />
+    </mxCell>
+    <mxCell id="pagos" value="&lt;b&gt;Pasarela de Pagos&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Sistema externo]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Procesa cobros y reembolsos&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6B6B6B;fontColor=#ffffff;arcSize=12;fontSize=13;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="1340" y="820" width="300" height="120" as="geometry" />
+    </mxCell>
+    <mxCell id="notif" value="&lt;b&gt;Proveedor de Notificaciones&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Sistema externo]&lt;/i&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;Push, correo y SMS&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6B6B6B;fontColor=#ffffff;arcSize=12;fontSize=13;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="920" y="1020" width="360" height="120" as="geometry" />
+    </mxCell>
+
+    <mxCell id="e1" value="descarga assets [HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="usuario" target="cdn"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e2" value="solicita API [HTTPS/JSON]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="usuario" target="edge"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e3" value="enruta y balancea" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="edge" target="k8s"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e4" value="persiste [SQL]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="k8s" target="bdnodo"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e5" value="caché / locks [Redis]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="k8s" target="redisnodo"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e6" value="publica [AMQP]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="k8s" target="colanodo"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e7" value="cobra [REST]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="k8s" target="pagos"><mxGeometry relative="1" as="geometry" /></mxCell>
+    <mxCell id="e8" value="notifica [REST]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="colanodo" target="notif"><mxGeometry relative="1" as="geometry" /></mxCell>
+  </root>
+</mxGraphModel>

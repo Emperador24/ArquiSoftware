@@ -130,8 +130,9 @@ arquitectura?'' --- prioriza atributos de calidad, propone microservicios + infr
 explica cómo cada decisión satisface cada atributo. Incluye el caso complejo de Evacuación
 (CU-010).\\[0.4em]
 C4Diagrams.pdf & Los mismos componentes, dibujados & ``¿Cómo se ve esa arquitectura?'' --- 6
-diagramas C4 (Contexto, Contenedores, Componentes, Panorama de Sistemas, Dinámico, Despliegue),
-todos validados contra el checklist oficial.\\[0.4em]
+diagramas C4 hechos en draw.io (Contexto, Contenedores, Componentes, Panorama de Sistemas,
+Secuencia, Despliegue), cada caja con nombre + tipo/tecnología + descripción, todos validados
+contra el checklist oficial.\\[0.4em]
 CU\_eventos\_completo.xlsx & Las 25 fichas de casos de uso & ``¿Qué hace exactamente el sistema,
 paso a paso?'' --- una ficha por caso de uso con flujo básico, alternos, excepciones, atributos de
 calidad e infraestructura.\\
@@ -337,7 +338,11 @@ formato explícito de árbol con escenarios (H,H).
 Compilado desde \texttt{Work/C4Diagrams.tex}. Complementa a \textit{ArchitecturalProposal.pdf}: en
 vez de explicar con palabras, \textbf{dibuja} la misma arquitectura en 6 diagramas siguiendo el
 modelo C4 de Simon Brown, cada uno validado contra el checklist oficial de
-\href{https://c4model.com/diagrams/checklist}{c4model.com/diagrams/checklist}.
+\href{https://c4model.com/diagrams/checklist}{c4model.com/diagrams/checklist}. Los 6 diagramas se
+elaboraron en \href{https://app.diagrams.net/}{draw.io} (no como código tikz) siguiendo dos
+indicaciones del profesor: cada caja muestra nombre, tipo/tecnología y una breve descripción, y el
+antiguo Diagrama Dinámico se reemplazó por un diagrama de secuencia UML. Los archivos fuente
+\texttt{.drawio} están en \texttt{Work/Diagrams/}.
 
 \subsection{Los 6 diagramas, uno por uno}
 
@@ -359,8 +364,9 @@ Controlador API, Servicio de Publicación, Gestor de Concurrencia, Procesador de
 QR, Repositorio, Publicador de Eventos.\\[0.4em]
 Panorama de Sistemas & Auxiliar & Zoom hacia \textbf{afuera}: el sistema junto a otros sistemas de
 la organización (Contabilidad, CRM, BI) y cómo intercambian datos.\\[0.4em]
-Dinámico & Auxiliar & Secuencia numerada (8 pasos) de la reventa de una entrada (CU-006), mostrando
-el orden exacto de las interacciones entre contenedores.\\[0.4em]
+Secuencia & Auxiliar & Diagrama de secuencia UML (líneas de vida, 8 mensajes numerados y barra de
+activación) de la reventa de una entrada (CU-006), mostrando el orden exacto de las interacciones
+entre contenedores.\\[0.4em]
 Despliegue & Auxiliar & Los contenedores aterrizados en infraestructura real: CDN, balanceador,
 clúster de Kubernetes (un pod por microservicio), clústeres de BD/Redis/mensajería.\\
 \bottomrule
@@ -378,10 +384,12 @@ Está explicado así en la introducción del documento.
 --- Contenedores muestra las \textbf{unidades desplegables} (apps, servicios, bases de datos) sin
 entrar en su interior; Componentes hace zoom \textbf{dentro de un solo contenedor} para mostrar sus
 piezas internas y responsabilidades.
-\item \textit{``¿Qué es un Dynamic Diagram y en qué se diferencia de un diagrama de secuencia
-UML?''} --- Es funcionalmente muy similar (interacciones numeradas entre elementos para un caso de
-uso específico), pero usa la notación de contenedores/componentes de C4 en vez de la notación UML,
-así que se mantiene visualmente consistente con los otros niveles del mismo modelo.
+\item \textit{``El modelo C4 propone un Dynamic Diagram, ¿por qué aquí hay un diagrama de secuencia
+UML?''} --- Fue una indicación explícita del profesor sobre la versión anterior de este documento.
+El Dynamic Diagram de C4 es una variante simplificada (interacciones numeradas sin líneas de vida
+ni barras de activación); el diagrama de secuencia UML documenta el mismo flujo con una notación
+más estándar y precisa, a costa de salirse un poco de la familia visual C4 usada en los otros cinco
+diagramas.
 \item \textit{``¿Qué representa el System Landscape Diagram que no represente ya el de Contexto?''}
 --- El de Contexto muestra \emph{solo} el sistema en cuestión frente a sus usuarios y externos; el
 de Panorama de Sistemas amplía la vista a \emph{otros sistemas} de la misma organización con los
@@ -517,8 +525,8 @@ tiene realmente el equipo --- si son más de 5, haría falta sumar más CU para 
 suyos.
 \item \textit{``¿Cuál es el caso de uso más complejo de todo el sistema y por qué?''} --- CU-006
 (mercado secundario), porque es el que se usa como base del Diagrama de Componentes (Nivel 3) en
-\textit{C4Diagrams.pdf} y del Diagrama Dinámico: concurrencia, pago externo, invalidación/regeneración
-de QR y notificación asíncrona en un mismo flujo.
+\textit{C4Diagrams.pdf} y del Diagrama de Secuencia: concurrencia, pago externo,
+invalidación/regeneración de QR y notificación asíncrona en un mismo flujo.
 \item \textit{``¿Dónde queda registrado el porqué de cada decisión arquitectónica?''} ---
 \texttt{Work/BitacoraArquitectonica.md}: un log permanente (exigido desde la Clase 5) con cada
 decisión, sus alternativas consideradas y sus riesgos técnicos, no solo el resultado final.
