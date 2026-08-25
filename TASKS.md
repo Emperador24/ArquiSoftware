@@ -54,6 +54,7 @@ dates (update both here and in `Cronograma.md`).
 | Bitácora Arquitectónica | Work/BitacoraArquitectonica.md | in-progress (ongoing) | continuous | **New required deliverable** (from Clase 5): a permanently-updated log of meetings, design decisions, architectural changes, analyses, and PoCs. Created 2026-08-18; foundational decisions from ArchitecturalProposal.tex migrated in as a dated entry on 2026-08-20 (with alternatives/risks). Keep adding to it all semester — it's graded as part of the process, not a one-time submission. |
 | Use-case spreadsheet | Submission/CU_eventos_completo.xlsx | submitted (2026-08-20) | — | **32 use cases** (CU-001..CU-032, up from 25): added CU-026..CU-032 to cover missing CRUD/admin gaps (Eventos, Cuentas de Usuario, Roles y Permisos, Recintos y Zonas, Proveedores, Pagos y Conciliación Financiera, Reportes y Analítica). The `Autor` field on all 32 sheets is set to the real owner (Daniel Cristancho, Samuel Emperador, Sebastián Sánchez, Diego Coronado — see `Work/DistribucionCasosUso.pdf`). The CU-021..CU-032 ownership split (proposed by the assistant) was confirmed with the team by the user on 2026-08-20. Known pre-existing issue still open: CU-013/CU-015 internal-Id mismatch, documented in the Bitácora. |
 | **Entrega 1 (SAD v1)** | Work/ArchitecturalProposal.tex + Bitácora + PoCs + prototipo individual → Submission/ | todo | 2026-10-09 (tentative) | Full checklist in `Cronograma.md` § "Checklist consolidado — Entrega 1". Needs: CU + RNF spec, ASR (Utility Tree), diseño arquitectónico, PoCs de desafíos técnicos, prototipo del CU más complejo por integrante, listado de CU/QA comprometidos para Entrega 2. |
+| SAD (arc42 template) — v1 draft | Work/DescripcionArquitecturaSoftware.tex | in-progress (2026-08-25) | 2026-10-09 (tentative, folds into Entrega 1) | **First draft assembled 2026-08-25**, consolidating existing material into the course's arc42-based SAD template: intro, 32-CU functional overview, domain concept table, stakeholders, a first-cut Utility Tree (ASR-01..ASR-10), constraints, all 6 C4 views (context/container/component/process/physical, embedding `Diagrams/*.png`), 4 ADRs derived from the founding decisions already in the Bitácora, a technical-risk table, glossary, and references. Compiles clean (19 pages). Left explicitly pending (marked `[Pendiente: ...]` inline, not yet real content): full domain UML class diagram, component breakdown for the other 3 containers (only CU-006's is done), dev/test deployment diagrams (only prod exists), and per-service ER data models. Not yet copied to `Submission/` — still a draft, not the finished Entrega 1 deliverable. |
 | **Entrega 2 (prototipo + SAD v2)** | Full repo + deploy script → Submission/ | todo | 2026-11-20 (tentative — 1 week before semester end) | Full checklist in `Cronograma.md` § "Checklist consolidado — Entrega 2". Needs: prototipo funcional completo, SAD v2 con resultados de validación, código documentado en Git, script de despliegue automatizado. |
 
 | Distribución de casos de uso | Work/DistribucionCasosUso.tex → Submission/DistribucionCasosUso.pdf | done (2026-08-20) | — | **Not a course deliverable** — internal team reference PDF listing the 32 CU grouped by owner (Daniel Cristancho, Samuel Emperador, Sebastián Sánchez, Diego Coronado), 8 each, with name + description per CU. Owner names + CU-001..CU-020 assignment given directly by the user; CU-021..CU-032 split proposed by the assistant into contiguous thematic blocks, **confirmed with the team by the user on 2026-08-20**. Regenerate if CU are added/reassigned. |
@@ -79,7 +80,7 @@ _(Add new tasks here as they're assigned, e.g. from the course syllabus or profe
       CU-006 reference left over from before the use-case renumbering;
       rewrote the checklist section against every official item; recompiled
       clean (16 pages) and re-submitted the PDF.
-- [ ] **Strengthen ASR justification with a Utility Tree.** Clase 5 teaches
+- [x] **Strengthen ASR justification with a Utility Tree.** Clase 5 teaches
       the Utility Tree technique (Quality Attribute → refinement →
       prioritized scenario, e.g. (H,H)) for justifying which requirements are
       architecturally significant. `Work/ArchitecturalProposal.tex` lists
@@ -94,7 +95,12 @@ _(Add new tasks here as they're assigned, e.g. from the course syllabus or profe
       while reviewing everything asked in Clases 1–5 end-to-end — still the
       only open item from that range; every other Clase 1–5 exercise
       (team/idea confirmation, QA prioritization in
-      `ArchitecturalProposal.tex`, the full C4 set, the Bitácora) is done.)
+      `ArchitecturalProposal.tex`, the full C4 set, the Bitácora) is done.
+      **Done 2026-08-25**: a first-cut Utility Tree (ASR-01..ASR-10) is now
+      in `Work/DescripcionArquitecturaSoftware.tex` § "Requisitos
+      Arquitectónicamente Significativos (ASR)", derived from the 10
+      prioritized QA in `ArchitecturalProposal.tex` mapped to concrete CU
+      scenarios. Team should review/adjust before Entrega 1.)
 - [x] Migrate the architectural decisions already in
       `Work/ArchitecturalProposal.tex` ("Resumen de decisiones
       arquitectónicas") into a dated entry in `Work/BitacoraArquitectonica.md`,

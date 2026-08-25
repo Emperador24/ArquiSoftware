@@ -1,1 +1,10 @@
 .DS_Store
+
+# Artefactos de compilación de LaTeX (Work/ solo debe versionar el .tex fuente)
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz

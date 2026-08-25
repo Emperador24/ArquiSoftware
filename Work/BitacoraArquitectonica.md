@@ -31,6 +31,51 @@ Cada entrada nueva va arriba (orden cronológico inverso), con este formato:
 
 ---
 
+## 2026-08-25 — Primera versión del SAD (plantilla arc42) y primer Árbol de Utilidad
+
+**Tipo:** Análisis / Cambio arquitectónico
+
+**Contexto:** el curso exige un documento único de Descripción de la
+Arquitectura del Software (SAD) siguiendo la plantilla arc42
+(`Work/DescripcionArquitecturaSoftware.tex`, hasta ahora sin llenar). El
+trabajo arquitectónico ya elaborado vivía repartido en varios archivos
+(`ArchitecturalProposal.tex`, `C4Diagrams.tex`, `DistribucionCasosUso.tex` y
+esta bitácora) sin consolidarse en el formato exigido para Entrega 1.
+
+**Decisión / resultado:** se consolidó una versión 1.0 del SAD en
+`Work/DescripcionArquitecturaSoftware.tex`, reutilizando el contenido ya
+elaborado: introducción y atributos de calidad (de
+`ArchitecturalProposal.tex`), los 32 CU agrupados por bloque temático (de
+`DistribucionCasosUso.tex`), las seis vistas C4 con sus imágenes (de
+`C4Diagrams.tex`), y los cuatro ADR fundacionales, redactados a partir de la
+entrada del 2026-08-18 de esta misma bitácora. Se añadió contenido nuevo que
+no existía antes en ningún archivo: un primer Árbol de Utilidad formal
+(ASR-01 a ASR-10, derivado de los 10 atributos de calidad priorizados) y una
+tabla de restricciones del proyecto. Quedan marcadas explícitamente como
+pendientes (no se inventó contenido): el diagrama de clases UML del dominio,
+el desglose de componentes de los contenedores distintos a
+Entradas/Mercado Secundario, los ambientes de despliegue de desarrollo y
+pruebas, y los modelos de datos por servicio. Compila sin errores (19
+páginas). Todavía no se copia a `Submission/` por ser un borrador, no la
+entrega terminada.
+
+**Alternativas consideradas:** dejar el contenido arquitectónico repartido
+en los archivos originales y no usar la plantilla arc42 — se descartó
+porque el curso exige explícitamente ese formato para la Entrega 1.
+
+**Ventajas / desventajas:** consolidar todo en un solo documento facilita la
+entrega y la sustentación, pero implica mantener la información
+sincronizada en dos lugares (el documento consolidado y los archivos
+fuente originales) hasta que estos últimos se retiren o se dejen solo como
+insumo interno.
+
+**Riesgos técnicos:** ninguno nuevo; se heredan los ya documentados en la
+entrada del 2026-08-18.
+
+**Participantes:** Samuel Emperador (vía asistente).
+
+---
+
 ## 2026-08-22 — Corrección de resolución: los 6 diagramas C4 no se leían bien
 
 **Tipo:** Cambio arquitectónico (documentación, sin cambio de arquitectura)
