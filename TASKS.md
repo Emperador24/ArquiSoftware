@@ -49,7 +49,7 @@ dates (update both here and in `Cronograma.md`).
 |---|---|---|---|---|
 | Project summary | Work/Summary.tex → Submission/Summary.pdf | submitted (2026-08-20) | — | Compiled, no LaTeX errors. Fixed stale CU-016..CU-020 references (2026-08-20) to match the use-case renumbering — they're actually CU-006..CU-010. |
 | Defense study guide | Defense/DefenseGuide.tex → Defense/DefenseGuide.pdf | done (2026-08-20) | — | **Not a course deliverable** — personal prep material explaining every file in `Submission/` for the oral sustentación, with anticipated professor questions and known weak points. Regenerate when `Submission/` changes meaningfully. |
-| Architectural proposal | Work/ArchitecturalProposal.tex → Submission/ArchitecturalProposal.pdf | submitted (2026-08-18) | — | Compiled, no LaTeX errors. Re-checked 2026-08-20 against the Clase 2/3 exercise (prioritize QA alta/media/baja, define components/connections, explain how the architecture satisfies each QA) — already covers all three explicitly, no changes needed. |
+| Architectural proposal | Work/ArchitecturalProposal.tex → Submission/ArchitecturalProposal.pdf | submitted (2026-08-18) | — | Compiled, no LaTeX errors. Re-checked 2026-08-20 against the Clase 2/3 exercise (prioritize QA alta/media/baja, define components/connections, explain how the architecture satisfies each QA) — already covers all three explicitly, no changes needed. **2026-08-25**: expanded § "Disponibilidad — Alta" with the Clase 6 (Availability) exercise — a table mapping 6 concrete availability scenarios to Bass/Kazman tactics (detection/recovery/prevention) and patterns (active/passive redundancy, Circuit Breaker); recompiled clean (17 pages) and re-copied to `Submission/`. |
 | C4 diagrams | Work/C4Diagrams.tex → Submission/C4Diagrams.pdf | submitted (2026-08-22) | — | Covers all 6 C4 diagrams (Context, Container, Component, System Landscape, Sequence, Deployment) per the Clase 4 exercise; Level 4/Code deliberately excluded with justification. **2026-08-22: rebuilt per professor feedback** — all 6 diagrams remade in draw.io (app.diagrams.net, not tikz) with name + type/technology + short description on every box, and the Dynamic diagram replaced with a UML sequence diagram (lifelines, numbered messages, activation bar) for CU-006. **Same day, follow-up fix**: initial export was low-resolution (viewport screenshot) and text was unreadable once scaled into the PDF — switched to draw.io's native PNG export (250% zoom) + system clipboard + `osascript` extraction, giving real 3500–5000px-wide images; verified sharp at 300 DPI. Source `.drawio` files + exported PNGs in `Work/Diagrams/`. Checklist section updated to match. Compiled clean, 16 pages. |
 | Bitácora Arquitectónica | Work/BitacoraArquitectonica.md | in-progress (ongoing) | continuous | **New required deliverable** (from Clase 5): a permanently-updated log of meetings, design decisions, architectural changes, analyses, and PoCs. Created 2026-08-18; foundational decisions from ArchitecturalProposal.tex migrated in as a dated entry on 2026-08-20 (with alternatives/risks). Keep adding to it all semester — it's graded as part of the process, not a one-time submission. |
 | Use-case spreadsheet | Submission/CU_eventos_completo.xlsx | submitted (2026-08-20) | — | **32 use cases** (CU-001..CU-032, up from 25): added CU-026..CU-032 to cover missing CRUD/admin gaps (Eventos, Cuentas de Usuario, Roles y Permisos, Recintos y Zonas, Proveedores, Pagos y Conciliación Financiera, Reportes y Analítica). The `Autor` field on all 32 sheets is set to the real owner (Daniel Cristancho, Samuel Emperador, Sebastián Sánchez, Diego Coronado — see `Work/DistribucionCasosUso.pdf`). The CU-021..CU-032 ownership split (proposed by the assistant) was confirmed with the team by the user on 2026-08-20. Known pre-existing issue still open: CU-013/CU-015 internal-Id mismatch, documented in the Bitácora. |
@@ -105,7 +105,7 @@ _(Add new tasks here as they're assigned, e.g. from the course syllabus or profe
       `Work/ArchitecturalProposal.tex` ("Resumen de decisiones
       arquitectónicas") into a dated entry in `Work/BitacoraArquitectonica.md`,
       including alternatives considered and risks. Done 2026-08-20.
-- [ ] **Ejercicio de clase 06 (Availability) — aplicar tácticas y patrones
+- [x] **Ejercicio de clase 06 (Availability) — aplicar tácticas y patrones
       de Disponibilidad al proyecto.** Última diapositiva de
       `Work/Slides/06. Availability.pdf`: "Identifique tácticas y patrones
       relevantes para los escenarios de Disponibilidad identificados en su
@@ -115,6 +115,18 @@ _(Add new tasks here as they're assigned, e.g. from the course syllabus or profe
       si aplica, reflejar tácticas/patrones elegidos en
       `ArchitecturalProposal.tex`. Ver detalle en
       `Work/Notes/06. Availability.md`.
+      **Hecho 2026-08-25**: se identificaron 6 escenarios de disponibilidad
+      del proyecto (falla de instancia de validación QR, picos en apertura
+      de venta, caída del API Gateway, indisponibilidad de la pasarela de
+      pagos, falla del proveedor de notificaciones en emergencia, falla del
+      nodo Redis del bloqueo de reventa) y se les aplicó el catálogo de
+      tácticas (detección/recuperación/prevención) y patrones (redundancia
+      activa/pasiva, Circuit Breaker) de Bass/Kazman. Documentado en detalle
+      en la Bitácora (entrada del 2026-08-25) y reflejado en
+      `Work/ArchitecturalProposal.tex` § "Disponibilidad — Alta" con una
+      tabla escenario/estímulo-respuesta/tácticas/patrón. Recompilado sin
+      errores (17 páginas) y re-copiado a
+      `Submission/ArchitecturalProposal.pdf`.
 - [ ] **Revisar clases 07–14 (Deployability, Performance, Modifiability,
       Integrabilidad, Safety, Security, Testability, Usability) — ningún
       "Ejercicio" explícito encontrado**, a diferencia de la clase 06. No
