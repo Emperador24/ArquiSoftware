@@ -31,6 +31,72 @@ Cada entrada nueva va arriba (orden cronológico inverso), con este formato:
 
 ---
 
+## 2026-08-25 — Ejercicio Clase 6 (Availability): tácticas y patrones de disponibilidad
+
+**Tipo:** Análisis
+
+**Contexto:** la última diapositiva de `Work/Slides/06. Availability.pdf` pide
+"identificar tácticas y patrones relevantes para los escenarios de
+Disponibilidad identificados en el proyecto" (catálogo de Bass/Kazman:
+tácticas de detección, recuperación y prevención de defectos, y patrones de
+redundancia y *circuit breaker*). Quedó pendiente en el backlog de
+`TASKS.md` desde que se resumió la clase.
+
+**Decisión / resultado:** se identificaron seis escenarios de disponibilidad
+ya presentes en el proyecto (riesgos de la Bitácora del 2026-08-18 y ASR-02
+del SAD) y se les aplicó explícitamente el catálogo de tácticas/patrones:
+
+1. **Falla de una instancia de validación de QR durante el ingreso masivo**
+   — detección por heartbeat/monitoreo; recuperación con redundant spare +
+   reconfiguración; reintroducción con reinicio escalado. Patrón:
+   redundancia activa (*hot spare*) tras el balanceador.
+2. **Picos de tráfico en la apertura de venta** — detección por monitoreo de
+   carga; recuperación con autoescalado + reconfiguración; prevención
+   diseñando una sala de espera virtual como estado competente (no como
+   error); graceful degradation. Patrón: redundancia activa con escalado
+   horizontal del servicio de Entradas.
+3. **Caída del API Gateway** — detección por heartbeat/health-check;
+   recuperación con redundant spare + reconfiguración. Patrón: redundancia
+   activa + Circuit Breaker hacia microservicios lentos.
+4. **Indisponibilidad de la pasarela de pagos** — detección de
+   excepciones/timeout; recuperación con retry acotado + graceful
+   degradation (transacción pendiente en vez de fallo total). Patrón:
+   Circuit Breaker.
+5. **Falla del proveedor de notificaciones durante una emergencia** —
+   detección de excepciones/timeout; recuperación con retry limitado +
+   canal secundario (SMS) + graceful degradation (personal en sitio releva
+   la comunicación). Patrón: Circuit Breaker + redundancia pasiva.
+6. **Falla del nodo de Redis del bloqueo de concurrencia en reventa** —
+   detección por heartbeat del clúster; recuperación con redundant spare +
+   resincronización de estado tras el failover. Patrón: redundancia
+   activa/pasiva vía réplica de Redis (Sentinel/Cluster).
+
+El análisis completo, con la tabla de escenario/estímulo-respuesta/tácticas/
+patrón, se documentó en `Work/ArchitecturalProposal.tex` § "Disponibilidad —
+Alta" (dentro de "Cómo la arquitectura satisface los atributos de
+calidad"), que es donde ya vivía la justificación de este atributo.
+Recompilado sin errores (17 páginas, antes 16) y vuelto a copiar a
+`Submission/ArchitecturalProposal.pdf`.
+
+**Alternativas consideradas:** documentar el ejercicio solo en la Bitácora
+sin tocar `ArchitecturalProposal.tex` — se descartó porque el propio
+backlog recomendaba reflejar las tácticas/patrones elegidos en el documento
+de arquitectura, no solo dejar constancia del análisis.
+
+**Ventajas / desventajas:** deja explícito, con el vocabulario exacto de la
+clase (tácticas de detección/recuperación/prevención, patrones de
+redundancia y Circuit Breaker), por qué la arquitectura ya propuesta
+(balanceador, réplicas, colas) efectivamente sostiene la disponibilidad;
+no se introdujo ningún componente nuevo, solo se nombró explícitamente el
+mecanismo detrás de decisiones que ya estaban tomadas.
+
+**Riesgos técnicos:** ninguno nuevo — los seis escenarios ya estaban
+cubiertos como riesgos o ASR; este análisis solo formaliza su respuesta.
+
+**Participantes:** Samuel Emperador (vía asistente).
+
+---
+
 ## 2026-08-25 — Primera versión del SAD (plantilla arc42) y primer Árbol de Utilidad
 
 **Tipo:** Análisis / Cambio arquitectónico

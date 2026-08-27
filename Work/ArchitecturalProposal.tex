@@ -268,6 +268,79 @@ Redis puede utilizarse para bloqueo temporal de entradas durante el checkout. La
 
 El balanceador y las múltiples instancias permiten redirigir solicitudes hacia instancias sanas. Esto es especialmente importante durante ventas, ingreso masivo, validación QR y emergencias.
 
+Siguiendo el catálogo de tácticas (detección, recuperación y prevención de defectos) y patrones (redundancia, \textit{circuit breaker}) de disponibilidad de Bass/Kazman visto en clase, la Tabla \ref{tab:tacticas-disponibilidad} identifica las tácticas y patrones aplicables a los escenarios de disponibilidad más críticos del sistema.
+
+\begin{center}
+\begin{longtable}{p{2.6cm}p{4.7cm}p{3.6cm}p{2.9cm}}
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endhead
+Falla de una instancia de validación de QR durante el ingreso masivo &
+Una instancia deja de responder mientras miles de asistentes ingresan; el balanceador debe
+redirigir el tráfico a instancias sanas sin interrupción perceptible. &
+Heartbeat / monitoreo (detección); redundant spare + reconfiguración (recuperación); reinicio
+escalado para reintegrar la instancia (reintroducción). &
+Redundancia activa (\textit{hot spare}) tras balanceador de carga.\\[0.5em]
+
+Picos de tráfico en la apertura de venta &
+Miles de usuarios consultan y compran de forma simultánea; el servicio de Entradas debe absorber
+la carga sin caerse, degradando funciones no críticas si es necesario. &
+Monitoreo de carga (detección); autoescalado + reconfiguración (recuperación); sala de espera
+virtual diseñada como estado competente, no como error (prevención); \textit{graceful
+degradation}. &
+Redundancia activa con escalado horizontal (\textit{elastic}) del microservicio de Entradas.\\[0.5em]
+
+Caída del API Gateway (punto único de entrada) &
+La instancia activa del Gateway falla; el tráfico debe redirigirse de inmediato a otra instancia
+sin exponer el fallo a las cuatro interfaces. &
+Heartbeat / \textit{health-check} (detección); redundant spare + reconfiguración (recuperación). &
+Redundancia activa (\textit{hot spare}) + \textit{Circuit Breaker} hacia los microservicios
+lentos, para evitar fallos en cascada.\\[0.5em]
+
+Indisponibilidad de la pasarela de pagos externa &
+La pasarela no responde o responde con error durante una compra o reventa; la operación no debe
+fallar por completo. &
+Detección de excepciones / \textit{timeout}; \textit{retry} con máximo de reintentos
+(recuperación); \textit{graceful degradation} (marcar la transacción como pendiente en vez de
+fallar toda la operación). &
+\textit{Circuit Breaker} (evita seguir enviando solicitudes a una pasarela caída).\\[0.5em]
+
+Falla del proveedor de notificaciones durante una emergencia &
+El proveedor de notificaciones no responde mientras se coordina una evacuación; el protocolo de
+evacuación no debe detenerse por esta falla. &
+Detección de excepciones / \textit{timeout}; \textit{retry} limitado + reconfiguración hacia un
+canal secundario, SMS si falla el push (recuperación); \textit{graceful degradation} (el personal
+en sitio releva la comunicación). &
+\textit{Circuit Breaker} + redundancia pasiva (canal secundario en espera).\\[0.5em]
+
+Falla del nodo de Redis usado para el bloqueo de concurrencia en reventa &
+El nodo Redis activo se cae mientras se procesa una reventa; el sistema debe conmutar a una
+réplica sin permitir que dos compradores completen la misma compra. &
+Heartbeat / \textit{health-check} del clúster (detección); redundant spare (recuperación);
+resincronización de estado tras el \textit{failover} (reintroducción). &
+Redundancia activa/pasiva vía réplica de Redis (Redis Sentinel/Cluster).\\
+\bottomrule
+\caption{Tácticas y patrones de disponibilidad aplicados a los escenarios críticos del sistema.}
+\label{tab:tacticas-disponibilidad}
+\end{longtable}
+\end{center}
+
+En resumen, la \textbf{detección} de fallas se apoya en heartbeat/health-check, monitoreo de
+carga y detección de excepciones/timeout; la \textbf{recuperación} combina redundant spare,
+reconfiguración, reintentos (retry), degradación controlada (graceful degradation), reinicio
+escalado y resincronización de estado; y la \textbf{prevención} se refleja en diseñar de entrada
+estados competentes para los picos de tráfico esperados (sala de espera virtual) en vez de
+tratarlos como una excepción. A nivel de patrones, la \textbf{redundancia activa (hot spare)}
+detrás de un balanceador de carga protege el Gateway, el servicio de Entradas y el clúster Redis;
+el \textbf{Circuit Breaker} protege las integraciones más propensas a fallar por causas externas
+(pasarela de pagos, proveedor de notificaciones, y las llamadas del Gateway hacia microservicios
+lentos), evitando que una falla externa se propague en cascada al resto del sistema.
+
 \subsection{Seguridad -- Alta}
 
 El API Gateway centraliza autenticación y autorización. Se propone control de acceso basado en roles:
