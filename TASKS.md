@@ -127,6 +127,16 @@ _(Add new tasks here as they're assigned, e.g. from the course syllabus or profe
       tabla escenario/estímulo-respuesta/tácticas/patrón. Recompilado sin
       errores (17 páginas) y re-copiado a
       `Submission/ArchitecturalProposal.pdf`.
+      **2026-08-27**: se agregó `Work/AnalisisDisponibilidad-TacticasPatrones.md`,
+      un documento de trabajo **informal** (no LaTeX, no va a `Submission/`)
+      que repasa el catálogo completo de Bass/Kazman contra los 6 escenarios
+      — no solo lo finalmente elegido, sino qué otras tácticas/patrones se
+      consideraron y por qué se descartaron, qué partes del catálogo el
+      proyecto no usa todavía en ningún escenario, y 5 preguntas abiertas
+      para el equipo (persistencia de la fila virtual, nombrar SAGA
+      explícitamente, caída total del Gateway por mala config, rollback de
+      compra a mitad de failover de Redis, ack de notificaciones). Sirve de
+      respaldo para la sustentación y como checklist antes de Entrega 1.
 - [ ] **Revisar clases 07–14 (Deployability, Performance, Modifiability,
       Integrabilidad, Safety, Security, Testability, Usability) — ningún
       "Ejercicio" explícito encontrado**, a diferencia de la clase 06. No
