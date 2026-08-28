@@ -50,6 +50,21 @@ SAD compartido:
 | **I3** | Integrabilidad, Safety, Testability |
 | **I4** | Security, Usability |
 
+### Convenciones del repositorio de código (HEXACORE)
+
+Decidido el 2026-08-27, adelantado respecto al setup técnico planeado para
+la Semana 7 (ver tabla abajo):
+- Ramas `main` / `develop` / `feature/<nombre>-<algo>` por integrante — cada
+  quien trabaja en su propia `feature/...` desde `develop` y la sube vía
+  Pull Request; `develop` solo pasa a `main` cuando está estable.
+- Cada integrante mantiene además un **repo personal aparte** (fuera de
+  HEXACORE) para probar una táctica/patrón de forma aislada (ej. Circuit
+  Breaker, redundancia con Redis Sentinel) antes de aplicarla al PoC real
+  del proyecto.
+
+Detalle completo y links a los repos en `TASKS.md` § "Repositorio de código
+(HEXACORE)".
+
 ---
 
 ## Resumen de hitos
@@ -135,7 +150,7 @@ SAD compartido:
 |---|---|---|---|
 | **Clase 12** (mar 8 sep) — Security | Sin ejercicio explícito. | Verificar que RBAC/autenticación/autorización ya descritos en `ArchitecturalProposal.tex` cubran confidentiality/integrity/availability de forma explícita. | **I4** |
 | **Clase 13** (vie 11 sep) — Testability | Sin ejercicio explícito. | Definir estrategia de pruebas (unitarias, integración, aceptación) que se usará en el prototipo — insumo para "estándares de programación" de Entrega 2. | **I3** |
-| Trabajo de equipo transversal | — | Empezar setup técnico: repositorio de código, estándares de programación, estructura del proyecto. | Todos |
+| Trabajo de equipo transversal | — | Empezar setup técnico: repositorio de código, estándares de programación, estructura del proyecto. **Adelantado 2026-08-27**: flujo de ramas (main/develop/feature) y convención de repos personales de PoC ya decididos — ver § "Convenciones del repositorio de código (HEXACORE)" arriba. | Todos |
 
 ---
 

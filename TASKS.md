@@ -43,6 +43,32 @@ dates (update both here and in `Cronograma.md`).
 | Sustentaciones | 2026-11-24 a 2026-11-27 |
 | Fin de semestre | **2026-11-28 (confirmado)** |
 
+## Repositorio de código (HEXACORE)
+
+Repos de código del proyecto — separados de este repo (`ArquiSoftware`),
+que solo contiene el diseño/SAD en LaTeX:
+- **Código**: https://github.com/Emperador24/HEXACORE
+- **Bitácora** (repo aparte; su relación exacta con
+  `Work/BitacoraArquitectonica.md` de este repo quedó sin aclarar del todo
+  con el usuario — confirmar si reemplaza al archivo local o es otra cosa):
+  https://github.com/Emperador24/Bitacora-Hexacore
+
+**Flujo de ramas en HEXACORE** (decidido 2026-08-27):
+- `main` — solo recibe merges desde `develop` cuando está estable; nunca
+  push directo.
+- `develop` — rama de integración, donde llega el trabajo de todos antes de
+  pasar a `main`.
+- Cada integrante trabaja en su propia rama `feature/<nombre>-<algo>`
+  creada desde `develop`, y la sube a `develop` vía Pull Request (no push
+  directo a `develop` tampoco).
+
+**Repos personales de PoC** (fuera de HEXACORE): cada integrante mantiene
+además su propio repo personal, aparte del proyecto, para probar una
+táctica o patrón de forma aislada (p. ej. cómo funciona Circuit Breaker, o
+redundancia con Redis Sentinel) antes de llevarla al PoC real dentro de
+HEXACORE. No se entregan ni se referencian en el SAD — son solo para
+aprender la técnica antes de implementarla en el proyecto.
+
 ## Deliverables
 
 | Task | File(s) | Status | Due | Notes |
