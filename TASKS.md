@@ -89,6 +89,24 @@ aprender la técnica antes de implementarla en el proyecto.
 
 _(Add new tasks here as they're assigned, e.g. from the course syllabus or professor's instructions.)_
 
+- [ ] **App Móvil Cliente en Swift/Xcode (iOS), junto a la versión Android.**
+      Creado `Proyecto/App/frontend/app-ios/` (2026-09-02): proyecto Xcode
+      generado con `xcodegen` (`HexacoreCliente.xcodeproj`) y puerto 1:1 en
+      SwiftUI de las 19 pantallas + modelos + mock data + navegación de
+      `app-movil` (Kotlin/Compose). Detalle completo, incluyendo qué se pudo
+      y no se pudo validar sin Xcode.app, en la Bitácora (entrada
+      2026-09-02). Pendiente:
+      - Abrir `HexacoreCliente.xcodeproj` en una Mac con **Xcode.app
+        completo** (esta máquina solo tiene las Command Line Tools — sin
+        SDK de iOS no se pudo compilar/correr el proyecto real) y resolver
+        cualquier error de compilación específico de iOS.
+      - Aceptar la licencia de Xcode pendiente en esta máquina
+        (`sudo xcodebuild -license`) — quedó así por un efecto secundario
+        de la validación hecha en esta sesión, ver Bitácora.
+      - Agregar un ícono de app real (`AppIcon.appiconset` está vacío).
+      - Decidir con el equipo si ambas apps (Android y iOS) se mantienen
+        para Entrega 2, o si esta es solo exploratoria.
+
 - [x] **Confirm project/team status vs. syllabus.** Clase 1's slides list
       "tareas urgentes para la próxima clase": form the 5–7 person team via a
       Google Form (link in `Work/Notes/01...md`) and define **two** possible

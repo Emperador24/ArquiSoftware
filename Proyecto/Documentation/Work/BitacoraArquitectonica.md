@@ -31,6 +31,90 @@ Cada entrada nueva va arriba (orden cronológico inverso), con este formato:
 
 ---
 
+## 2026-09-02 — Puerto nativo en SwiftUI/Xcode de la App Móvil Cliente (junto a la versión Android)
+
+**Tipo:** Cambio arquitectónico
+
+**Contexto:** El usuario pidió empezar la App Móvil Cliente en Swift para
+compilarla en Xcode, además de la ya existente en Kotlin/Jetpack Compose
+(`Proyecto/App/frontend/app-movil`). No se trata de reemplazar la app
+Android — el pedido fue construir la contraparte iOS. Esta máquina solo
+tiene las Command Line Tools de Xcode instaladas, no Xcode.app completo:
+no hay SDK de iOS ni forma de compilar/correr el proyecto localmente.
+
+**Decisión / resultado:** Se creó `Proyecto/App/frontend/app-ios/` con un
+proyecto Xcode (`HexacoreCliente.xcodeproj`, generado con `xcodegen` desde
+`project.yml` — instalado vía Homebrew porque no había forma de crear un
+`.xcodeproj` válido a mano de manera confiable sin Xcode.app) y un puerto
+1:1 en SwiftUI de las 19 pantallas, modelos, mock data y lógica de
+navegación de la app Android: mismos roles (Cliente/Personal), mismo login
+único con cargo determinando las pantallas operativas
+(`destinosPara(cargo)`), mismo estado elevado para carrito/pedidos
+(`AppState`, equivalente al estado hoisted de `MainActivity.kt`). Diferencias
+de plataforma explícitas: el `ModalNavigationDrawer` de Compose no existe en
+SwiftUI, así que el menú lateral (`DrawerContainer`) se construye a mano; la
+barra inferior también es una vista propia (`BottomBar`) en vez de un
+`TabView` de sistema, porque debe permanecer visible incluso en pantallas
+alcanzadas por navegación en profundidad (Entradas, Menú, Pasarela de pago,
+Perfil, Ajustes) — igual que el `bottomBar` de `Scaffold` en Compose envuelve
+todo el `NavHost`. Deployment target iOS 16.
+
+Sin Xcode.app no fue posible compilar/correr el proyecto real. Se validó lo
+que sí se pudo desde la línea de comandos: la capa de datos y navegación
+(`Data/`, `Navigation/Destinos.swift`, sin dependencias de UIKit/SwiftUI)
+tipa limpio con `swiftc` usando el SDK de macOS de las Command Line Tools;
+además, el SDK de macOS también trae SwiftUI, lo que permitió tipar contra
+`-target macOS` casi todo el resto del código (todo lo que no depende de
+UIKit) y detectar un bug real antes de entregarlo: `DestinoCliente` y
+`DestinoPersonal` no declaraban conformidad `Hashable`, necesaria para el
+`ForEach(id: \.self)` y el binding de selección de `BottomBar` — corregido.
+Un efecto secundario no deseado de esa validación: al intentar
+`sudo xcodebuild -license` para probar un target distinto, quedó pendiente
+de nuevo la aceptación de la licencia de Xcode en esta máquina (bloquea
+incluso compilaciones triviales hasta que el usuario la acepte); se le avisó
+explícitamente en la conversación en vez de intentar resolverlo sin permiso,
+ya que requiere una contraseña interactiva.
+
+**Alternativas consideradas:**
+- **Kotlin Multiplatform (KMM) o Flutter** para compartir lógica entre
+  Android e iOS en vez de dos bases de código nativas separadas: se
+  discutió con el usuario antes de empezar (pros/contras de ir a Swift) pero
+  no se eligió — el pedido explícito fue Swift nativo en Xcode.
+- **Escribir el `.xcodeproj` a mano** (XML/plist de `project.pbxproj`) en vez
+  de usar `xcodegen`: se descartó por ser mucho más frágil sin Xcode.app
+  disponible para verificar que el archivo generado realmente abre.
+- **Recursos de texto externalizados** (`Localizable.strings`/String
+  Catalog) espejando los `strings.xml` de Android: se descartó por ahora a
+  favor de strings literales embebidas directamente en cada vista, más
+  simple de mantener sin editor visual de Xcode disponible en esta sesión;
+  si el proyecto crece o necesita localización real, vale la pena migrar.
+
+**Ventajas / desventajas:** Tener las dos plataformas nativas cubre el caso
+de que el curso o la sustentación pidan una app iOS real, y el diseño
+declarativo de SwiftUI mapeó razonablemente 1:1 desde Compose. La desventaja
+mayor es la ya discutida con el usuario antes de empezar: cero reutilización
+de código entre Kotlin y Swift (toda pantalla/modelo se mantiene por
+duplicado en dos lenguajes), y que todo el equipo necesita una Mac con
+Xcode.app completo (no solo Command Line Tools) para compilar, correr y
+seguir desarrollando esta app — verificado en esta misma sesión que sin
+Xcode.app no hay SDK de iOS ni forma de generar/abrir el simulador.
+
+**Riesgos técnicos:** Ningún archivo Swift se compiló de extremo a extremo
+contra el SDK real de iOS (no disponible aquí) — el usuario debe abrir
+`HexacoreCliente.xcodeproj` en Xcode y resolver cualquier error de
+compilación específico de iOS que no se pudo detectar por este medio
+(los candidatos más probables, ya revisados a mano pero no verificados por
+un compilador de iOS real, son las vistas que usan `PhotosPicker`,
+`AsyncImage` y los modificadores `.navigationBarTitleDisplayMode`/
+`.keyboardType`). Falta un ícono de app real (el `AppIcon.appiconset` quedó
+con la entrada vacía) y no hay ningún target de pruebas. La licencia de
+Xcode quedó pendiente de aceptar en esta máquina por el efecto secundario ya
+descrito.
+
+**Participantes:** Samuel Contreras (vía asistente).
+
+---
+
 ## 2026-08-25 — Ejercicio Clase 6 (Availability): tácticas y patrones de disponibilidad
 
 **Tipo:** Análisis
