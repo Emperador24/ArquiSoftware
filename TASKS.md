@@ -26,6 +26,11 @@ Full week-by-week schedule (team of 4, work started 2026-07-31) is in
 1–14) asks for, the quality-attribute ownership split across the 4 team
 members, and internal milestones leading up to Entrega 1 and Entrega 2.
 
+Detailed step-by-step guide for closing out Entrega 1's 6 checklist items —
+including the mandatory decision template (quality attribute driver, ≥2
+technology/tactic alternatives compared, evidence/PoC results) — is in
+[`Proyecto/Documentation/Work/GuiaEntrega1.md`](./Proyecto/Documentation/Work/GuiaEntrega1.md).
+
 **⚠️ No official dates for Entrega 1, Entrega 2, parciales, or
 sustentaciones appear in any slide deck reviewed so far (Clases 1–14).**
 The dates below are the team's own tentative planning, anchored only on the
