@@ -393,30 +393,56 @@ comprometer un atributo que nunca se analizó).
 
 ## Checklist de cierre antes de entregar
 
-- [ ] RNF redactados (punto 1) y agregados al SAD.
-- [ ] Árbol de Utilidad revisado por todo el equipo, no solo generado por
-      el asistente (punto 2).
-- [ ] Los 7 atributos pendientes (o al menos los "Alta") tienen su análisis
-      de tácticas con ≥2 alternativas + evidencia + QA explícito, en la
-      Bitácora y en `ArchitecturalProposal.tex` (punto 3).
-- [ ] 2–3 PoCs corridos, con README de resultados, en el repo de código
-      (punto 4) — **hacer esto primero**, alimenta todo lo demás.
+- [x] RNF redactados (punto 1) y agregados al SAD — **RNF-01 a RNF-16** en
+      `DescripcionArquitecturaSoftware.tex` § "Requisitos No Funcionales"
+      (2026-09-06).
+- [x] Árbol de Utilidad con formato (Importancia, Dificultad) correcto y
+      2 ASR nuevos (Integrabilidad, Desplegabilidad) — (punto 2,
+      2026-09-06). **Pendiente:** que todo el equipo lo revise, no solo el
+      asistente.
+- [x] Los 8 atributos pendientes (Deployability, Integrabilidad,
+      Comprobabilidad, Safety, Security, Rendimiento, Mantenibilidad,
+      Usabilidad) tienen su análisis de tácticas/patrones (o Five Planes
+      para Usabilidad) con ≥2 alternativas comparadas, en
+      `ArchitecturalProposal.tex` § "Cómo la arquitectura satisface..." y
+      en la Bitácora (2026-09-06) — punto 3. **Pendiente:** ninguna de
+      estas comparaciones tiene todavía un PoC propio (son comparaciones
+      técnicas razonadas, no medidas) salvo las que se apoyan en los PoCs
+      del punto 4; cada responsable (tabla de `Cronograma.md`) debe
+      revisar la suya.
+- [x] **2 PoCs corridos**, con README de resultados reales, en
+      `Proyecto/App/PoCs/` (punto 4, 2026-09-06):
+      - PoC-01 (bloqueo de concurrencia): confirma ADR-03 con evidencia
+        real (30/30 trials con venta duplicada sin protección, 0/30 con
+        Redis u optimista).
+      - PoC-02 (validación de QR): resultado **no concluyente** — el
+        benchmark local en SQLite no reprodujo la latencia de red real;
+        decisión UUID vs. JWT queda abierta hasta repetirlo contra una BD
+        en red.
+      **Falta el 3er PoC recomendado** (failover activo vs. pasivo) — ver
+      `PoCs/README.md`.
 - [ ] **Decidir el lenguaje/framework del backend de `services/*`**
       (auditoría #2) — hoy está literalmente "por definir" y bloquea
-      empezar a codificar.
+      empezar a codificar. **Sigue pendiente.**
 - [ ] **Decidir RabbitMQ vs. Kafka** (auditoría #3) — hoy el ADR-04 los
-      lista a ambos sin elegir.
+      lista a ambos sin elegir. **Sigue pendiente.**
 - [ ] **Construir el demo de Flutter y redactar el ADR-05 del stack móvil**
       (auditoría #8, desarrollado a fondo arriba) — es el ejemplo que
-      motivó esta versión de la guía.
+      motivó esta versión de la guía. **Sigue pendiente** (requiere
+      instalar el SDK de Flutter).
+- [ ] **Cerrar la decisión UUID vs. JWT para el QR** (surgida del PoC-02) —
+      repetir el benchmark contra una base de datos en red antes de
+      fijarlo en un ADR.
 - [ ] Auditar el resto de la tabla de decisiones (filas #1, #4, #5, #6, #7)
       y conseguir al menos evidencia liviana (documentación citada) donde
       no alcance el tiempo para un PoC propio.
 - [ ] Prototipo del CU complejo de cada integrante, demostrable en vivo
       (punto 5).
 - [ ] Tabla de alcance para Entrega 2 (punto 6).
-- [ ] `Work/DescripcionArquitecturaSoftware.tex` compilado sin errores y
-      copiado a `Submission/` (hoy sigue siendo borrador).
+- [x] `Work/DescripcionArquitecturaSoftware.tex` (22 páginas) y
+      `Work/ArchitecturalProposal.tex` (30 páginas) compilan sin errores
+      con los cambios de 2026-09-06. **Sigue sin copiarse a
+      `Submission/`** — siguen siendo borradores.
 - [ ] Actualizar `Proyecto/App/README.md` (tabla "Stack técnico") una vez
       se resuelvan las decisiones pendientes de la auditoría.
 - [ ] Actualizar `TASKS.md` y esta guía conforme se cierre cada punto.

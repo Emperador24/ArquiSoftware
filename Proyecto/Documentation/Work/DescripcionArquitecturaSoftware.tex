@@ -173,6 +173,82 @@ complejidad arquitectónica y sirven de hilo conductor en las vistas de este doc
 \textbf{CU-006 (Gestión del Mercado Secundario de Entradas)} y \textbf{CU-010 (Gestionar
 Evacuación ante Emergencias)}.
 
+% ==================== Requisitos no funcionales ====================
+\section{Requisitos No Funcionales (RNF)}
+\label{sec:rnf}
+
+La Tabla \ref{tab:rnf} especifica, para cada atributo de calidad priorizado en
+\textit{ArchitecturalProposal.tex} (incluidos los cuatro incorporados al revisar las clases 6 a 14
+del curso: Integrabilidad, Desplegabilidad, Comprobabilidad y Seguridad física), un requisito no
+funcional medible — no una aspiración genérica ("el sistema debe ser rápido"), sino un umbral
+verificable. Estos RNF son la base de la que se derivan los escenarios ASR de la Sección
+\ref{sec:asr}.
+
+\begin{center}
+\begin{longtable}{|p{1.3cm}|p{4.6cm}|p{2.4cm}|p{5.3cm}|}
+\hline
+\textbf{ID} & \textbf{Requisito no funcional} & \textbf{Atributo} & \textbf{Métrica / umbral}\\
+\hline
+\endhead
+RNF-01 & Validación de una entrada en el ingreso al recinto & Rendimiento & $\leq$ 500 ms por
+escaneo, percentil 95.\\
+\hline
+RNF-02 & Respuesta durante la apertura de venta de un evento masivo & Rendimiento /
+Disponibilidad & $\geq$ 2000 solicitudes/segundo sostenidas sin degradar el tiempo de respuesta
+del RNF-01.\\
+\hline
+RNF-03 & Recuperación ante la caída de una instancia de validación de QR & Disponibilidad &
+\textit{Failover} $\leq$ 10 s, sin pérdida de transacciones en curso.\\
+\hline
+RNF-04 & Disponibilidad general del backend & Disponibilidad & $\geq$ 99.9\% mensual (m\'aximo
+$\sim$43 min de \textit{downtime} no programado al mes).\\
+\hline
+RNF-05 & Autenticación y transporte de datos sensibles & Seguridad & Tokens JWT con expiración
+$\leq$ 1 h; HTTPS/TLS obligatorio en todas las interfaces; contraseñas nunca en texto plano.\\
+\hline
+RNF-06 & Bloqueo de doble venta en el mercado secundario & Consistencia & 0\% de ventas
+duplicadas de la misma entrada bajo compradores concurrentes (verificado en el PoC de bloqueo,
+ver \textit{GuiaEntrega1.md}).\\
+\hline
+RNF-07 & Actualización de aforo y estado de zonas & Tiempo real & Latencia $\leq$ 3 s entre el
+registro de un ingreso/incidente y su reflejo en los tableros de monitoreo.\\
+\hline
+RNF-08 & Escalado del servicio de Entradas ante un pico de tráfico & Escalabilidad & Nuevas
+instancias activas en $\leq$ 2 min desde que se supera el 80\% de uso de CPU/memoria.\\
+\hline
+RNF-09 & Auditoría de operaciones sensibles & Trazabilidad & 100\% de las transferencias, pagos,
+reembolsos y cambios administrativos quedan registrados con usuario, fecha y resultado.\\
+\hline
+RNF-10 & Uso de la interfaz sin capacitación previa & Usabilidad & Un usuario nuevo completa su
+tarea principal (comprar una entrada, registrar asistencia) en $\leq$ 5 pasos, sin ayuda externa.\\
+\hline
+RNF-11 & Independencia de despliegue entre dominios & Mantenibilidad & Un cambio en un
+microservicio se despliega sin requerir cambios ni redespliegue de los demás (ASR-09).\\
+\hline
+RNF-12 & Consumo uniforme del backend & Portabilidad & Toda funcionalidad expuesta por el API
+Gateway es consumible, sin duplicar lógica, desde el portal web y desde la app móvil (ASR-10).\\
+\hline
+RNF-13 & Aislamiento de integraciones externas & Integrabilidad & Un fallo o cambio en la
+Pasarela de Pagos o el Proveedor de Notificaciones no requiere cambios en más de un componente
+(el adaptador correspondiente).\\
+\hline
+RNF-14 & Actualización de un servicio sin interrumpir un evento en curso & Desplegabilidad &
+0 s de \textit{downtime} perceptible por el cliente durante un despliegue Blue/Green en horario
+de evento.\\
+\hline
+RNF-15 & Aislamiento de pruebas de un microservicio & Comprobabilidad & Las pruebas de un
+microservicio corren sin depender de que los demás microservicios ni los servicios externos
+estén activos (mocks/inyección de dependencias).\\
+\hline
+RNF-16 & Control de aforo máximo por zona & Seguridad física (\textit{Safety}) & El sistema
+rechaza el 100\% de los registros de ingreso que excedan el aforo configurado de una zona, sin
+excepción por estado de pago.\\
+\hline
+\caption{Requisitos No Funcionales del sistema, uno o más por atributo de calidad priorizado.}
+\label{tab:rnf}
+\end{longtable}
+\end{center}
+
 % ==================== Modelo de dominio ====================
 \section{Modelo de dominio}
 \label{sec:dominio}
@@ -268,60 +344,74 @@ la plantilla exigida y que las decisiones arquitectónicas estén justificadas.\
 
 La Tabla \ref{tab:asr} presenta el primer Árbol de Utilidad del proyecto, derivado de los
 atributos de calidad priorizados en \textit{ArchitecturalProposal.tex} y de los escenarios ya
-identificados en la bitácora arquitectónica.
+identificados en la bitácora arquitectónica. Cada escenario se prioriza con el par
+\textbf{(Importancia, Dificultad)} en escala Alta/Media/Baja, siguiendo el formato de Árbol de
+Utilidad visto en la Clase 5 (ej. (H,H) = alto impacto de negocio y alta incertidumbre/dificultad
+técnica) — no una sola columna de prioridad genérica.
 
 \begin{center}
-\begin{longtable}{|p{1.1cm}|p{2.1cm}|p{1.9cm}|p{1.9cm}|p{2.1cm}|p{4cm}|p{1.6cm}|}
+\begin{longtable}{|p{1.1cm}|p{2cm}|p{1.8cm}|p{1.7cm}|p{1.8cm}|p{3.6cm}|p{1.1cm}|p{1.1cm}|}
 \hline
 \textbf{ID ASR} & \textbf{Título} & \textbf{Atributo} & \textbf{Sub-atributo} &
-\textbf{Funcionalidades} & \textbf{Escenario} & \textbf{Prioridad}\\
+\textbf{Funcionalidades} & \textbf{Escenario} & \textbf{Import.} & \textbf{Dific.}\\
 \hline
 \endhead
 ASR-01 & Bloqueo de doble venta en reventa & Consistencia & Concurrencia de datos & CU-006 & Dos
 compradores intentan adquirir simultáneamente la misma entrada publicada en reventa; el sistema
 garantiza que solo uno complete la compra y el otro reciba de inmediato un mensaje de no
-disponibilidad. & Alta\\
+disponibilidad. & Alta & Alta\\
 \hline
 ASR-02 & Disponibilidad durante el ingreso masivo & Disponibilidad & Tolerancia a fallos &
 CU-002, CU-021, CU-022 & Ante la caída de una instancia del servicio de validación de QR durante
 el ingreso al recinto, el balanceador redirige el tráfico a instancias sanas sin interrupción
-perceptible para el asistente. & Alta\\
+perceptible para el asistente. & Alta & Alta\\
 \hline
 ASR-03 & Protección de datos de pago y credenciales & Seguridad & Confidencialidad & CU-001,
 CU-024, CU-031 & Un intento de acceso no autorizado a datos de pago o credenciales es rechazado
-por el API Gateway y queda registrado para auditoría. & Alta\\
+por el API Gateway y queda registrado para auditoría. & Alta & Media\\
 \hline
 ASR-04 & Respuesta bajo carga en apertura de venta & Rendimiento & Tiempo de respuesta & CU-001,
 CU-005 & Durante la apertura de venta de un evento masivo, miles de usuarios consultan
 disponibilidad y compran de forma simultánea; la mayoría de las solicitudes se resuelve en
-tiempos cortos y estables. & Alta\\
+tiempos cortos y estables. & Alta & Alta\\
 \hline
 ASR-05 & Actualización de aforo y zonas en tiempo real & Tiempo real & Actualización de estado &
 CU-010, CU-019 & El aforo y el estado de las zonas se reflejan en los tableros de monitoreo con
-baja latencia tras el registro de un ingreso o un incidente. & Media-Alta\\
+baja latencia tras el registro de un ingreso o un incidente. & Media & Media\\
 \hline
 ASR-06 & Escalado independiente del servicio de Entradas & Escalabilidad & Escalabilidad
 horizontal & CU-001, CU-006 & Ante un incremento súbito de tráfico en el servicio de Entradas
 durante una preventa, aumentan sus instancias sin afectar el rendimiento de los demás dominios. &
-Media\\
+Media & Media\\
 \hline
 ASR-07 & Auditoría de transferencias y pagos & Trazabilidad & Auditabilidad & CU-006, CU-031 &
 Cada transferencia de entrada, pago o reembolso queda registrada con usuario, fecha y resultado,
-consultable en un reporte de auditoría. & Media\\
+consultable en un reporte de auditoría. & Media & Baja\\
 \hline
 ASR-08 & Interfaces especializadas por rol & Usabilidad & Adecuación a la tarea & Todos los CU
 (por interfaz) & Un usuario nuevo de cada rol completa su tarea principal en su interfaz
-correspondiente sin capacitación previa. & Baja-Media\\
+correspondiente sin capacitación previa. & Baja & Baja\\
 \hline
 ASR-09 & Evolución independiente de dominios & Mantenibilidad & Modificabilidad & Todos los CU
 (por microservicio) & Un cambio en las reglas de negocio de Parqueaderos se implementa y despliega
-sin requerir cambios ni redespliegue del servicio de Entradas. & Baja-Media\\
+sin requerir cambios ni redespliegue del servicio de Entradas. & Media & Baja\\
 \hline
 ASR-10 & Consumo uniforme vía API & Portabilidad & Independencia de plataforma & Todos los CU &
 Una misma funcionalidad de backend se consume igual desde el portal web y desde la app móvil, sin
-duplicar lógica de negocio. & Baja-Media\\
+duplicar lógica de negocio. & Baja & Baja\\
 \hline
-\caption{Árbol de Utilidad — primera versión.}
+ASR-11 & Aislamiento de integraciones externas & Integrabilidad & Adaptación de interfaces &
+CU-001, CU-003, CU-010 & Un cambio de proveedor de pagos o de notificaciones se absorbe en el
+adaptador correspondiente, sin modificar la lógica de negocio de los microservicios que lo usan. &
+Media & Media\\
+\hline
+ASR-12 & Actualización sin interrupción durante un evento en curso & Desplegabilidad & Reemplazo
+de servicios & CU-002, CU-006 & Un hotfix al servicio de validación de QR se despliega mientras
+hay ingreso masivo activo, sin interrupción perceptible ni inconsistencia de versión. & Media &
+Alta\\
+\hline
+\caption{Árbol de Utilidad — primera versión, con prioridad expresada como (Importancia,
+Dificultad).}
 \label{tab:asr}
 \end{longtable}
 \end{center}

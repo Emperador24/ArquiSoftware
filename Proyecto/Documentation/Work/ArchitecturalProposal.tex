@@ -152,8 +152,14 @@ Media & Trazabilidad & Deben auditarse transferencias, pagos, accesos, turnos, o
 Baja-Media & Usabilidad & Las interfaces deben adaptarse a clientes, empleados, supervisores, organizadores y administradores.\\
 Baja-Media & Mantenibilidad & Los cambios en un dominio no deberían afectar innecesariamente a los demás.\\
 Baja-Media & Portabilidad & Las funcionalidades deben poder utilizarse mediante web y aplicaciones móviles.\\
+Media & Integrabilidad & El sistema depende de dos integraciones externas críticas para el negocio (pasarela de pagos, proveedor de notificaciones) que deben poder cambiarse o fallar sin comprometer el flujo principal.\\
+Media & Desplegabilidad & Los microservicios deben poder actualizarse (hotfixes, nuevas versiones) sin interrumpir un evento en curso, especialmente durante ingreso masivo o apertura de venta.\\
+Media & Comprobabilidad & Los flujos críticos (reventa concurrente, pagos, protocolo de emergencia) deben poder probarse de forma aislada, sin depender de servicios externos reales.\\
+Baja & Seguridad física (\textit{Safety}) & El sistema no controla hardware crítico, pero sí participa en la seguridad física de los asistentes a través del control de aforo y la coordinación de evacuaciones.\\
 \bottomrule
 \end{longtable}
+
+Las cuatro filas añadidas (Integrabilidad, Desplegabilidad, Comprobabilidad y Seguridad física) corresponden a atributos vistos en el curso (Clases 7, 10, 11 y 13) que no estaban priorizados en la versión inicial de esta tabla; se incorporan aquí para que las tácticas y patrones aplicados en la Sección \ref{sec:tacticas-qa} tengan una prioridad explícita de la que derivarse, tal como exige el curso para todo el rango de clases 6 a 14.
 
 \section{Arquitectura propuesta}
 
@@ -259,6 +265,14 @@ Se utiliza para compras, reventas, reembolsos y cobros del parqueadero. La integ
 Envía notificaciones push, correo y SMS cuando corresponda. Ejemplos: confirmación de compra, reventa, nuevo QR, cambios de evento, turnos, asignaciones y emergencias.
 
 \section{Cómo la arquitectura satisface los atributos de calidad}
+\label{sec:tacticas-qa}
+
+Esta sección aplica, para cada atributo de calidad priorizado, el catálogo de tácticas y patrones
+de Bass/Kazman visto en su clase correspondiente (Clases 6 a 13; la Clase 14, Usabilidad, se trata
+aparte con el \textit{Five Planes Framework} de Garrett, que es el marco que usó el profesor en esa
+clase en vez de tácticas arquitectónicas). Todas las tablas siguen el mismo criterio que ya se
+aplicó a Disponibilidad: identificar 2-3 escenarios reales del proyecto, comparar explícitamente
+al menos dos tácticas o patrones candidatos, y elegir uno con su justificación.
 
 \subsection{Consistencia -- Alta}
 
@@ -341,6 +355,199 @@ el \textbf{Circuit Breaker} protege las integraciones más propensas a fallar po
 (pasarela de pagos, proveedor de notificaciones, y las llamadas del Gateway hacia microservicios
 lentos), evitando que una falla externa se propague en cascada al resto del sistema.
 
+\subsection{Desplegabilidad -- Media}
+
+Siguiendo el catálogo de tácticas (administrar el pipeline de despliegue, administrar el sistema
+desplegado) y patrones de reemplazo de servicios (Blue/Green, Rolling Upgrade, Canary Testing,
+A/B Testing) de Bass/Kazman visto en clase, la Tabla \ref{tab:tacticas-desplegabilidad} identifica
+las tácticas y patrones aplicables a los escenarios de despliegue más relevantes del sistema.
+
+\begin{center}
+\begin{longtable}{p{2.6cm}p{4.7cm}p{3.6cm}p{2.9cm}}
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endhead
+Hotfix al servicio de validación de QR mientras hay ingreso masivo activo &
+Hay que corregir un defecto sin interrumpir las validaciones en curso ni arriesgar
+inconsistencia de versión durante el pico de tráfico. &
+\textit{Scripts de despliegue} automatizados; \textit{rollback} inmediato si la nueva versión
+falla su \textit{health-check}. &
+\textbf{Blue/Green} (instancias nuevas junto a las antiguas, corte de tráfico solo cuando la
+versión nueva responde sana; se acepta el costo de 2×N instancias porque la prioridad en un
+evento en vivo es cero inconsistencia de versión).\\[0.5em]
+
+Actualización rutinaria de un microservicio fuera de horario de evento &
+Se libera una nueva versión sin urgencia, con más tolerancia a un breve periodo de coexistencia
+de versiones. &
+Scripts de despliegue; \textit{scaled rollout} instancia por instancia. &
+\textbf{Rolling Upgrade} (más económico, solo N+1 instancias; se prefiere sobre Blue/Green porque
+aquí sí es aceptable una inconsistencia temporal de versión, a cambio de menor costo).\\[0.5em]
+
+Cambio riesgoso en la integración con la pasarela de pagos &
+Un cambio en cómo se procesan los cobros no debe exponerse a todos los clientes de una vez, por si
+introduce un defecto financiero. &
+\textit{Scaled rollout} a un subconjunto de usuarios; \textit{feature toggle} para desactivarlo de
+inmediato si falla. &
+\textbf{Canary Testing} (se prefiere sobre A/B Testing porque el objetivo es detectar fallas con
+bajo riesgo antes de liberar a todos, no comparar métricas de negocio entre dos versiones).\\
+\bottomrule
+\caption{Tácticas y patrones de desplegabilidad aplicados a los escenarios de despliegue del
+sistema.}
+\label{tab:tacticas-desplegabilidad}
+\end{longtable}
+\end{center}
+
+Se eligió \textbf{Blue/Green} para el escenario de mayor riesgo (evento en vivo) y \textbf{Rolling
+Upgrade} para el de menor riesgo (fuera de horario) en vez de aplicar un único patrón a todo el
+sistema, porque el propio catálogo de Bass/Kazman los presenta como alternativas con el mismo
+objetivo (reemplazo total de servicio) pero distinto trade-off costo/riesgo — no hay evidencia
+propia (PoC) todavía que mida ese trade-off en HEXACORE; queda como uno de los PoCs recomendados en
+\textit{Proyecto/Documentation/Work/GuiaEntrega1.md}.
+
+\subsection{Integrabilidad -- Media}
+
+Siguiendo el catálogo de tácticas (limitar dependencias, adaptar, coordinar) y patrones
+(Wrapper/Adapter, SOA, descubrimiento dinámico) de Bass/Kazman visto en clase, la Tabla
+\ref{tab:tacticas-integrabilidad} identifica las tácticas y patrones aplicables a las integraciones
+externas del sistema.
+
+\begin{center}
+\begin{longtable}{p{2.6cm}p{4.7cm}p{3.6cm}p{2.9cm}}
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endhead
+Integración con la Pasarela de Pagos externa &
+El sistema debe cobrar/reembolsar sin acoplar cada microservicio al protocolo específico del
+proveedor de pagos, y poder cambiar de proveedor sin reescribir la lógica de negocio. &
+Adaptar interfaces; adhesión a estándares (REST/HTTPS); abstraer servicios comunes (interfaz
+única \textit{Procesador de Pagos}). &
+\textbf{Wrapper/Adapter} (un único componente traduce hacia el protocolo del proveedor externo;
+se prefiere sobre exponer el SDK del proveedor directamente en cada microservicio, que
+acoplaría fuertemente el dominio a un proveedor concreto).\\[0.5em]
+
+Integración con el Proveedor de Notificaciones (push/correo/SMS) &
+El sistema debe enviar notificaciones sin que la lógica de negocio conozca el canal específico
+(push, correo o SMS) que finalmente se use. &
+Abstraer servicios comunes (interfaz única de notificación); usar intermediarios (la cola de
+mensajes ya decidida en ADR-04 desacopla el envío del flujo síncrono). &
+\textbf{Adapter} sobre la cola de mensajes como intermediario asíncrono (se prefiere sobre
+llamar directamente al SDK de cada canal, que dificultaría añadir un canal nuevo — ej. WhatsApp
+— sin tocar cada microservicio emisor).\\[0.5em]
+
+Futuras integraciones con sistemas de la organización (Contabilidad, CRM, BI — ver
+\textit{System Landscape} en \textit{C4Diagrams.tex}) &
+Otros sistemas de la organización deberán poder consumir datos de HEXACORE (ventas, ocupación)
+sin acceder directamente a las bases de datos de cada microservicio. &
+Adaptar interfaces (API Gateway como punto único de salida); adhesión a estándares (REST/JSON). &
+\textbf{API Gateway} reutilizado también como puerta de integración saliente (se prefiere sobre
+exponer cada base de datos de microservicio directamente, que rompería el aislamiento por
+dominio del ADR-01).\\
+\bottomrule
+\caption{Tácticas y patrones de integrabilidad aplicados a las integraciones externas del
+sistema.}
+\label{tab:tacticas-integrabilidad}
+\end{longtable}
+\end{center}
+
+\subsection{Comprobabilidad (\textit{Testability}) -- Media}
+
+Siguiendo el catálogo de tácticas (controlar y observar el estado del sistema, limitar
+complejidad) y patrones (inyección de dependencias, patrón estrategia, filtros de intercepción)
+de Bass/Kazman visto en clase, la Tabla \ref{tab:tacticas-testability} identifica las tácticas y
+patrones aplicables a los flujos más difíciles de probar del sistema.
+
+\begin{center}
+\begin{longtable}{p{2.6cm}p{4.7cm}p{3.6cm}p{2.9cm}}
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endhead
+Probar el flujo de reventa (CU-006) sin depender de la Pasarela de Pagos real &
+Las pruebas automatizadas del Servicio de Entradas no deben fallar ni cobrar dinero real por una
+indisponibilidad del proveedor externo. &
+Sandboxing / abstracción de fuentes de datos (mock del \textit{Procesador de Pagos}); interfaces
+especializadas para inspeccionar el estado del bloqueo de Redis en cada prueba. &
+\textbf{Inyección de dependencias} (el \textit{Procesador de Pagos} se recibe como interfaz
+inyectable, no se instancia internamente — se prefiere sobre acoplar el componente al SDK real,
+que haría imposible probarlo sin red).\\[0.5em]
+
+Reproducir un defecto de condición de carrera en el bloqueo de concurrencia de Redis &
+Un error reportado en producción (dos compradores casi simultáneos) debe poder reproducirse de
+forma determinista en un ambiente de pruebas. &
+Reducir no-determinismo (controlar explícitamente el orden de llegada de las peticiones
+concurrentes en la prueba); \textit{record/playback} del estado de Redis antes/después. &
+Sin patrón arquitectónico dedicado — se resuelve con disciplina de pruebas (harness de
+concurrencia controlada) más que con un componente nuevo.\\[0.5em]
+
+Aislar las pruebas de un microservicio sin levantar todo el sistema &
+Un integrante debe poder correr las pruebas de su microservicio (ej. Parqueaderos) sin tener
+las bases de datos y colas de los demás dominios corriendo. &
+Localizar el almacenamiento del estado del sistema (cada microservicio ya lo hace, por ADR-01);
+interfaces especializadas (endpoints de salud/estado para pruebas de integración). &
+\textbf{Filtros de intercepción} en las pruebas de integración, para registrar y verificar las
+peticiones salientes hacia otros servicios sin necesitar que respondan de verdad.\\
+\bottomrule
+\caption{Tácticas y patrones de comprobabilidad aplicados a los flujos más difíciles de probar
+del sistema.}
+\label{tab:tacticas-testability}
+\end{longtable}
+\end{center}
+
+\subsection{Seguridad física (\textit{Safety}) -- Baja}
+
+A diferencia de los demás atributos de esta sección, \textbf{Safety no es un atributo prioritario
+para HEXACORE}: el catálogo de Bass/Kazman para Safety está pensado sobre todo para sistemas de
+control físico/embebidos (aviónica, industria, salud) y HEXACORE es un sistema de información, no
+de control de hardware crítico — se documenta aquí por completitud, como exige el rango de clases
+6-14, y porque el sistema sí participa de forma indirecta en la seguridad física de los asistentes
+a través del control de aforo y la coordinación de evacuaciones (CU-010).
+
+\begin{center}
+\begin{longtable}{p{2.6cm}p{4.7cm}p{3.6cm}p{2.9cm}}
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endhead
+Se excede el aforo máximo de una zona (riesgo de aglomeración) &
+El sistema debe impedir que se registren más ingresos en una zona que ya alcanzó su aforo
+máximo, sin importar que la entrada ya esté pagada. &
+\textbf{Barrera/Interlock} (bloquear el registro de ingreso, no solo advertirlo); monitoreo de
+condiciones (aforo actual vs. máximo configurado en tiempo real). &
+\textbf{Separación de Safety} — el control de aforo se trata como una verificación independiente
+y con prioridad sobre el flujo comercial de validación de QR, no como una regla de negocio más
+del mismo componente.\\[0.5em]
+
+Las instrucciones de evacuación mostradas al personal quedan desactualizadas (ruta bloqueada) &
+El sistema no debe sugerir una ruta de evacuación que ya se marcó como bloqueada por el
+supervisor. &
+Chequeo de sanidad (validar la ruta contra el estado actual antes de mostrarla); degradación
+elegante (mostrar una instrucción genérica de respaldo si no hay ruta válida). &
+Sin patrón dedicado — se apoya en el mismo Servicio de Eventos/Emergencias que ya coordina CU-010.\\
+\bottomrule
+\caption{Tácticas y patrones de seguridad física (Safety) aplicados al control de aforo y
+evacuación.}
+\label{tab:tacticas-safety}
+\end{longtable}
+\end{center}
+
 \subsection{Seguridad -- Alta}
 
 El API Gateway centraliza autenticación y autorización. Se propone control de acceso basado en roles:
@@ -359,9 +566,104 @@ Administrador & Administrar usuarios, roles y configuración.\\
 \end{tabular}
 \end{center}
 
+Siguiendo el catálogo de tácticas (detectar, resistir, reaccionar y recuperarse de ataques) y
+patrones (interceptor de validación, sistema de prevención de intrusiones) de Bass/Kazman visto en
+clase, la Tabla \ref{tab:tacticas-seguridad} identifica las tácticas y patrones aplicables a los
+escenarios de seguridad más críticos del sistema.
+
+\begin{center}
+\begin{longtable}{p{2.6cm}p{4.7cm}p{3.6cm}p{2.9cm}}
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endhead
+Acceso no autorizado a datos de pago o credenciales &
+Un usuario sin sesión válida, o con permisos insuficientes, intenta acceder a datos de pago o
+credenciales de otro usuario. &
+Autenticar actores (tokens JWT); autorizar actores (RBAC, tabla anterior); cifrar datos (TLS en
+tránsito, cifrado en reposo para datos de pago); limitar exposición (principio de mínimo
+privilegio en el API Gateway). &
+\textbf{Interceptor de validación} en el API Gateway (se prefiere sobre validar permisos dentro
+de cada microservicio, que duplicaría la lógica de autorización en los seis dominios — ya
+decidido en ADR-02).\\[0.5em]
+
+Ataque de fuerza bruta contra el login &
+Un actor intenta muchas combinaciones de contraseña contra la misma cuenta en poco tiempo. &
+Detectar ataques (patrón de múltiples intentos fallidos); reaccionar (limitar/ bloquear el login
+tras N intentos, ej. 5); informar al usuario legítimo del bloqueo. &
+\textbf{Interceptor de validación} (rate limiting) en el API Gateway, reutilizando el mismo
+componente del escenario anterior en vez de introducir uno nuevo.\\[0.5em]
+
+Un usuario niega haber realizado una compra, reventa o pago &
+Debe poder demostrarse, ante un reclamo, quién hizo qué operación y cuándo. &
+Auditar (registro de acciones con usuario, fecha y resultado — ya cubierto por ASR-07);
+\textbf{no repudiación} (el registro de auditoría queda firmado/inmutable, no editable
+retroactivamente). &
+Sin patrón arquitectónico dedicado — se apoya en el mismo mecanismo de auditoría de ASR-07,
+reforzado con inmutabilidad del registro (ej. \textit{append-only log}).\\
+\bottomrule
+\caption{Tácticas y patrones de seguridad aplicados a los escenarios críticos del sistema.}
+\label{tab:tacticas-seguridad}
+\end{longtable}
+\end{center}
+
+Se eligió centralizar autenticación/autorización/rate-limiting en el \textbf{API Gateway} (un solo
+interceptor de validación) en vez de replicar estas tácticas en cada microservicio, porque ya es el
+punto único de entrada decidido en ADR-02 — evita seis implementaciones distintas de lo mismo, al
+costo de que el Gateway concentra más responsabilidad crítica (mitigado con redundancia, ya
+cubierto en la sección de Disponibilidad).
+
 \subsection{Rendimiento -- Alta}
 
-El balanceador, las instancias independientes, Redis y las colas permiten distribuir la carga y ejecutar operaciones pesadas de manera asíncrona.
+Siguiendo el catálogo de tácticas (controlar demanda de recursos, administrar recursos) y patrones
+(balanceador de carga, \textit{throttling}, Map-Reduce) de Bass/Kazman visto en clase, la Tabla
+\ref{tab:tacticas-rendimiento} identifica las tácticas y patrones aplicables a los escenarios de
+carga más exigentes del sistema.
+
+\begin{center}
+\begin{longtable}{p{2.6cm}p{4.7cm}p{3.6cm}p{2.9cm}}
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endhead
+Miles de solicitudes concurrentes al Servicio de Entradas durante la apertura de venta &
+La mayoría de las solicitudes de consulta/compra deben resolverse en tiempos cortos y estables
+(ASR-04), sin que el pico degrade a los demás microservicios. &
+Administrar peticiones de trabajo (SLA de tiempo de respuesta); introducir concurrencia (múltiples
+nodos, réplicas); aumentar recursos (autoescalado). &
+\textbf{Balanceador de Carga} + escalado horizontal del microservicio de Entradas (mismo patrón
+usado para Disponibilidad — aquí se elige por reducir latencia, no solo por tolerancia a fallos).\\[0.5em]
+
+Validación de QR en el ingreso al recinto &
+Cada validación debe resolverse en menos de 500 ms (RNF-01) aunque haya miles de asistentes
+ingresando en pocos minutos. &
+Aumentar eficiencia (índices en la tabla de entradas); mantener múltiples copias de datos
+(caché de entradas válidas del evento en curso). &
+\textbf{Caching} con Redis (se prefiere sobre consultar siempre la base de datos relacional,
+que sería más lenta bajo esa frecuencia de lectura — reutiliza la infraestructura Redis ya
+decidida en ADR-03).\\[0.5em]
+
+Generación de reportes agregados pesados (ventas, ocupación) en el Servicio de Administración &
+Un reporte que cruza datos de varios eventos no debe bloquear ni ralentizar las operaciones
+transaccionales del mismo servicio. &
+Introducir concurrencia (procesamiento paralelo/asíncrono); limitar tamaño de colas para no
+saturar el procesamiento de reportes. &
+\textbf{Map-Reduce} sobre los datos ya replicados a MongoDB (polyglot persistence, ADR-01) —
+se prefiere sobre calcular el reporte con consultas síncronas directas a PostgreSQL, que
+competiría por recursos con las transacciones de venta en curso.\\
+\bottomrule
+\caption{Tácticas y patrones de rendimiento aplicados a los escenarios de carga del sistema.}
+\label{tab:tacticas-rendimiento}
+\end{longtable}
+\end{center}
 
 \subsection{Tiempo real -- Media-Alta}
 
@@ -377,11 +679,83 @@ Se deben registrar operaciones como transferencias, compras, reembolsos, cambios
 
 \subsection{Usabilidad -- Baja-Media}
 
-Cada tipo de usuario posee una interfaz especializada: cliente, personal y administración. Esto evita presentar a cada usuario funciones que no necesita.
+A diferencia de los demás atributos de esta sección, la Clase 14 no cubrió tácticas/patrones de
+Bass/Kazman para Usabilidad, sino el \textbf{Five Planes Framework} de Jesse James Garrett — se
+aplica ese marco aquí, no una tabla de tácticas, para mantener la coherencia con lo visto en clase.
+
+\begin{itemize}
+\item \textbf{Estrategia:} el objetivo de negocio es maximizar las compras/reventas completadas
+sin fricción; los usuarios finales van desde clientes frecuentes de eventos hasta compradores
+ocasionales con distinto nivel de familiaridad tecnológica — la interfaz no puede asumir
+experiencia previa.
+\item \textbf{Alcance:} funcionalidad (comprar/revender entradas, reservar parqueadero, pedir
+comida, ver el estado de todo eso) y contenido (fecha, lugar, precio, disponibilidad y aforo de
+cada evento) ya delimitados por los CU-001 a CU-025.
+\item \textbf{Estructura:} arquitectura de información jerárquica (Inicio → Evento → Entradas del
+evento), con un modelo conceptual explícito de "boleta digital" (análogo a apps de boletería como
+TuBoleta Pass) — ya adoptado como referencia de diseño en \texttt{EntradasScreen} de la app móvil.
+\item \textbf{Esqueleto:} navegación por pestañas inferiores (Inicio/Parqueadero/Pedidos para
+Cliente; Turnos/Asistencia/función operativa/Incidentes/Emergencia para Personal) más un menú
+lateral común para Perfil/Ajustes — ya implementado igual en \texttt{app-movil} y \texttt{app-ios}.
+\item \textbf{Superficie:} pendiente de definir una identidad visual de marca propia; hoy las
+apps usan la paleta por defecto de Material 3 (Android) y del sistema (iOS) — riesgo menor de
+inconsistencia visual entre plataformas, marcado como pendiente en el código
+(\texttt{ui/theme/Theme.kt}).
+\end{itemize}
+
+Cada tipo de usuario posee además una interfaz especializada (cliente, personal, administración),
+evitando presentarle a cada uno funciones que no necesita — esto es, en términos del Five Planes,
+una decisión del plano de Alcance (qué funcionalidad expone cada interfaz) que se sostiene en la
+separación de contenedores ya decidida en la vista de contenedores (Sección \ref{sec:contenedores}
+del SAD).
 
 \subsection{Mantenibilidad -- Baja-Media}
 
-La separación en microservicios permite modificar un dominio sin modificar directamente los demás. Esto facilita pruebas, despliegues y evolución independiente.
+Siguiendo el catálogo de tácticas (incrementar cohesión, reducir acoplamiento, postergar enlace) y
+patrones (Layered/N-Tier, Service-based, Event-driven, Microkernel) de Bass/Kazman visto en clase,
+la Tabla \ref{tab:tacticas-mantenibilidad} identifica las tácticas y patrones aplicables a los
+escenarios de cambio más probables del sistema.
+
+\begin{center}
+\begin{longtable}{p{2.6cm}p{4.7cm}p{3.6cm}p{2.9cm}}
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Escenario} & \textbf{Estímulo / Respuesta esperada} & \textbf{Tácticas aplicadas} & \textbf{Patrón}\\
+\midrule
+\endhead
+Cambiar una regla de negocio de Parqueaderos sin afectar Entradas (ASR-09) &
+Un desarrollador modifica y redespliega el Servicio de Parqueaderos sin necesitar tocar ni
+redesplegar el Servicio de Entradas. &
+Encapsular (interfaz del servicio); restringir dependencias (cada microservicio solo se comunica
+vía su API, nunca accede a la BD de otro). &
+\textbf{Service-based} (microservicios, ya decidido en ADR-01) — se reafirma aquí desde el ángulo
+de Modificabilidad, no solo de Escalabilidad.\\[0.5em]
+
+Agregar un nuevo método de pago sin modificar cada microservicio que cobra &
+Los seis microservicios que hoy cobran contra la Pasarela de Pagos no deberían cambiar su código
+al agregar, por ejemplo, un nuevo método de pago digital. &
+Abstraer servicios comunes (interfaz única \textit{Procesador de Pagos}); usar intermediarios. &
+\textbf{Adapter/Facade} sobre la Pasarela de Pagos (mismo componente reutilizado desde la sección
+de Integrabilidad — la abstracción resuelve ambos atributos a la vez).\\[0.5em]
+
+Cambiar el motor de cola de mensajes en el futuro (de RabbitMQ a Kafka, o viceversa) &
+Los productores/consumidores de eventos (generación de QR, notificaciones, auditoría) no deberían
+reescribirse si cambia el motor de mensajería subyacente. &
+Usar intermediarios (publicar/consumir contra una interfaz propia, no contra el SDK del motor
+directamente); postergar enlace (configuración del motor concreto en tiempo de despliegue, no de
+compilación). &
+\textbf{Event-driven Architecture}, con una capa de abstracción propia sobre el motor concreto —
+se prefiere sobre acoplar cada microservicio al SDK específico de RabbitMQ o Kafka, que haría
+costoso el cambio de motor decidido en ADR-04.\\
+\bottomrule
+\caption{Tácticas y patrones de mantenibilidad aplicados a los escenarios de cambio más probables
+del sistema.}
+\label{tab:tacticas-mantenibilidad}
+\end{longtable}
+\end{center}
 
 \subsection{Portabilidad -- Baja-Media}
 

@@ -31,6 +31,155 @@ Cada entrada nueva va arriba (orden cronológico inverso), con este formato:
 
 ---
 
+## 2026-09-06 — Dos PoCs reales: bloqueo de concurrencia y validación de QR (con un resultado que contradijo la hipótesis inicial)
+
+**Tipo:** PoC
+
+**Contexto:** `GuiaEntrega1.md` (punto 4) exige 2-3 pruebas de concepto de código real,
+comparando ≥2 alternativas con evidencia medida, para los desafíos técnicos más complejos del
+proyecto. Hasta esta fecha no existía ningún PoC en el repositorio — todas las decisiones
+técnicas (ADR-01 a ADR-04) estaban justificadas por razonamiento, no por una prueba corrida.
+
+**Decisión / resultado:** se crearon dos PoCs en `Proyecto/App/PoCs/` (índice en
+`PoCs/README.md`):
+
+1. **PoC-01 — Bloqueo de concurrencia** (`poc-01-bloqueo-concurrencia/`): compara sin bloqueo vs.
+   bloqueo optimista (BD) vs. Redis (`SETNX`, ADR-03) simulando 50 compradores concurrentes
+   comprando la misma entrada, 30 trials por modo. Requirió instalar Redis localmente
+   (`brew install redis`, corriendo en background con `redis-server --daemonize yes`) y un
+   entorno virtual de Python con el cliente `redis` (no se usó `pip --break-system-packages`,
+   se prefirió un venv aislado). **Resultado:** sin protección, el 100% de los trials (30/30)
+   terminó en venta duplicada, hasta 50 ventas simultáneas de la misma entrada en un solo trial
+   — confirma que el riesgo de ASR-01 es real. Tanto el bloqueo optimista como Redis eliminaron
+   la duplicación por completo (0/30 en ambos). Esto **confirma ADR-03** con evidencia real por
+   primera vez, aunque aclara que Redis no se eligió por corrección (el bloqueo optimista también
+   es correcto) sino por evitar contención sobre la BD relacional bajo alta concurrencia — un
+   argumento que este PoC no midió directamente, dejado explícito como límite de la evidencia.
+
+2. **PoC-02 — Validación de QR a escala** (`poc-02-validacion-qr/`): compara UUID+BD (2 accesos:
+   `SELECT` + `UPDATE`) vs. JWT firmado con HMAC-SHA256 (1 acceso: `UPDATE` condicional, la firma
+   se verifica en memoria) validando 5000 códigos QR contra una base SQLite real en disco. **El
+   resultado midió lo contrario de la hipótesis inicial**: UUID+BD fue más rápido (8.0 ms totales
+   vs. 11.1 ms de JWT) porque SQLite corre local sin latencia de red, así que el `SELECT` que JWT
+   evita es casi gratis, mientras que el cómputo criptográfico HMAC sí tiene costo real. Se
+   reportó este resultado **tal como salió, sin forzar la conclusión esperada** — la decisión
+   entre las dos estrategias queda explícitamente pendiente hasta repetir el benchmark contra una
+   base de datos en red (donde el `SELECT` evitado sí tendría costo real de latencia), no contra
+   SQLite local.
+
+**Alternativas consideradas:** para el PoC-01, usar Docker para levantar Redis en un contenedor
+— se intentó primero (`docker info` reveló que el daemon de Docker no estaba corriendo) y se optó
+por instalar Redis nativo con Homebrew en su lugar, más liviano para esta sesión. Para el PoC-02,
+usar un diccionario en memoria en vez de SQLite real — se descartó porque habría hecho el `SELECT`
+de `uuid_bd` artificialmente gratis, ocultando cualquier diferencia real de I/O.
+
+**Ventajas / desventajas:** el equipo ahora tiene evidencia real (no solo razonamiento) para
+ADR-03, y una honestidad metodológica importante en PoC-02: no toda hipótesis de rendimiento se
+confirma, y reportar un resultado negativo/no concluyente es más valioso para la sustentación que
+inventar una conclusión que el propio experimento no respalda. La desventaja es que PoC-02 deja
+una decisión técnica (UUID vs. JWT para QR) **todavía sin cerrar** — no se recomienda elegir
+ninguna de las dos en el SAD hasta repetir el experimento con latencia de red real.
+
+**Riesgos técnicos:** el resultado del PoC-01 sobre "por qué Redis y no bloqueo optimista" sigue
+siendo en parte argumentativo (contención sobre la BD bajo alta concurrencia) y no fue medido
+directamente — sería una extensión natural del PoC-01 simular carga alta contra una BD real para
+confirmarlo. El PoC-02 deja abierta una decisión de arquitectura (estrategia de QR) que
+`ArchitecturalProposal.tex` aún no fija explícitamente.
+
+**Participantes:** Samuel Contreras (vía asistente).
+
+---
+
+## 2026-09-06 — RNF formales, Árbol de Utilidad con (Importancia, Dificultad), y tácticas/patrones de los 8 atributos de calidad restantes (Clases 7–14)
+
+**Tipo:** Análisis / Cambio arquitectónico
+
+**Contexto:** `Proyecto/Documentation/Work/GuiaEntrega1.md` (creada 2026-09-05, revisada
+2026-09-06) identificó tres huecos grandes para Entrega 1: (1) no existía una especificación
+formal de Requisitos No Funcionales, solo la tabla de prioridades de atributos de calidad; (2) el
+Árbol de Utilidad (`DescripcionArquitecturaSoftware.tex` §5) tenía una sola columna de
+"Prioridad" en vez del par (Importancia, Dificultad) que exige el formato real de Árbol de Utilidad
+visto en Clase 5; y (3) solo **Disponibilidad** (Clase 6) tenía un análisis completo de tácticas y
+patrones de Bass/Kazman con escenarios propios del proyecto — los otros 8 atributos vistos en el
+curso (Deployability, Performance, Modifiability, Integrabilidad, Safety, Security, Testability,
+Usability — Clases 7 a 14) no lo tenían, y cuatro de ellos (Integrabilidad, Desplegabilidad,
+Comprobabilidad, Seguridad física) ni siquiera aparecían en la tabla de atributos priorizados de
+`ArchitecturalProposal.tex`.
+
+**Decisión / resultado:**
+1. Se añadieron **RNF-01 a RNF-16** en `DescripcionArquitecturaSoftware.tex` (nueva sección
+   "Requisitos No Funcionales", §3), uno o más por atributo de calidad, cada uno con métrica y
+   umbral verificable (ej. RNF-01: validación de QR ≤ 500 ms p95; RNF-06: 0% de ventas duplicadas
+   bajo concurrencia).
+2. Se reformuló la tabla del Árbol de Utilidad (§6) para usar el par **(Importancia, Dificultad)**
+   en vez de una sola "Prioridad", y se agregaron **ASR-11** (Integrabilidad: aislamiento de
+   integraciones externas) y **ASR-12** (Desplegabilidad: actualización sin interrupción durante
+   un evento en curso) — los dos atributos nuevos con consecuencia arquitectónica directa
+   (patrón Adapter; Blue/Green vs. Rolling Upgrade). Testability y Safety no recibieron ASR propio
+   por ser de menor impacto arquitectónico: se cubren directamente vía RNF-15/RNF-16 y sus tablas
+   de tácticas, sin forzar un escenario de utilidad artificial.
+3. Se agregaron 4 filas a la tabla de "Atributos de calidad priorizados" de
+   `ArchitecturalProposal.tex`: Integrabilidad (Media), Desplegabilidad (Media), Comprobabilidad
+   (Media) y Seguridad física/Safety (Baja) — con su justificación, para que las tácticas del
+   punto 4 tengan una prioridad explícita de la que derivarse.
+4. Se escribió el análisis completo de tácticas y patrones (mismo formato que Disponibilidad:
+   tabla Escenario/Estímulo-Respuesta/Tácticas/Patrón, con síntesis) para los **8 atributos
+   restantes**, cada uno con 2-3 escenarios propios de HEXACORE y comparando explícitamente ≥2
+   tácticas o patrones candidatos antes de elegir uno:
+   - **Desplegabilidad** — Blue/Green (hotfix en evento en vivo) vs. Rolling Upgrade
+     (actualización rutinaria) vs. Canary Testing (cambio riesgoso en pagos).
+   - **Integrabilidad** — Wrapper/Adapter para pasarela de pagos y notificaciones; API Gateway
+     reutilizado como puerta de integración saliente.
+   - **Comprobabilidad (Testability)** — inyección de dependencias para poder probar CU-006 sin
+     la pasarela real; filtros de intercepción para aislar pruebas por microservicio.
+   - **Seguridad física (Safety)** — tratado explícitamente como de **baja prioridad real** para
+     este tipo de sistema (el catálogo de Bass/Kazman es para sistemas de control físico, no de
+     información), documentado por completitud vía control de aforo (Barrera/Interlock) y
+     validación de rutas de evacuación.
+   - **Seguridad** — se añadió la tabla de tácticas (antes solo tenía la tabla RBAC): interceptor
+     de validación centralizado en el API Gateway para autenticación, rate-limiting y auditoría/no
+     repudiación.
+   - **Rendimiento** — se expandió de un párrafo a tres escenarios con tácticas concretas
+     (balanceador+autoescalado, caching en Redis, Map-Reduce sobre MongoDB para reportes).
+   - **Mantenibilidad** — se expandió con tres escenarios (cambiar Parqueaderos sin afectar
+     Entradas, nuevo método de pago, cambio de motor de mensajería) usando Adapter/Facade y
+     Event-driven Architecture.
+   - **Usabilidad** — a diferencia de los demás, se aplicó el \textit{Five Planes Framework} de
+     Garrett (no tácticas de Bass/Kazman, porque la Clase 14 tampoco las usó), recorriendo
+     Estrategia/Alcance/Estructura/Esqueleto/Superficie para las apps y portales ya construidos.
+5. Ambos documentos (`ArchitecturalProposal.tex`, 30 páginas, antes 17; y
+   `DescripcionArquitecturaSoftware.tex`, 22 páginas, antes 19) se recompilaron sin errores.
+   Ninguno se copió todavía a `Submission/` — siguen siendo borradores de trabajo.
+
+**Alternativas consideradas:**
+- **Forzar un ASR propio para los 8 atributos**, incluyendo Testability y Safety: se descartó
+  porque el Árbol de Utilidad debe reservarse para los escenarios de mayor impacto arquitectónico
+  real (Clase 5) — Testability y Safety sí necesitan RNF y tácticas documentadas (ya lo tienen),
+  pero forzarlos al Árbol de Utilidad habría diluido su propósito.
+- **Aplicar tácticas de Bass/Kazman a Usabilidad** para mantener el mismo formato de tabla que los
+  demás atributos: se descartó porque la Clase 14 explícitamente no las cubrió — usar el Five
+  Planes Framework es más fiel a lo visto en clase.
+
+**Ventajas / desventajas:** deja el SAD con cobertura completa de las 9 clases de atributos de
+calidad exigidas por el curso (6 a 14), cada decisión de táctica/patrón con al menos dos
+alternativas comparadas y su razón de elección — cumple el nivel de rigor pedido explícitamente
+por el usuario. La desventaja es que **ninguna de estas comparaciones tiene todavía evidencia
+medida (PoC)** propia — son comparaciones técnicas razonadas a partir del catálogo de la clase, no
+experimentos corridos; el PoC de bloqueo de concurrencia (ver siguiente entrada de esta misma
+fecha) cubre parcialmente Consistencia/Rendimiento, pero los demás (Blue/Green vs. Rolling Upgrade,
+Adapter de pagos, etc.) siguen pendientes de una prueba propia — marcado en el checklist de
+`GuiaEntrega1.md`.
+
+**Riesgos técnicos:** las prioridades (Importancia, Dificultad) del Árbol de Utilidad y de la
+tabla de atributos priorizados fueron asignadas por el asistente a partir del catálogo de clase,
+no por el equipo — conviene que cada integrante responsable de su atributo (tabla de
+`Cronograma.md`: I1 Deployability, I2 Performance/Modifiability, I3
+Integrabilidad/Safety/Testability, I4 Security/Usability) las revise y ajuste antes de la entrega.
+
+**Participantes:** Samuel Contreras (vía asistente).
+
+---
+
 ## 2026-09-02 — Puerto nativo en SwiftUI/Xcode de la App Móvil Cliente (junto a la versión Android)
 
 **Tipo:** Cambio arquitectónico
