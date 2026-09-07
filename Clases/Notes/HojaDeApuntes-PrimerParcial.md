@@ -1,92 +1,131 @@
 # Hoja de apuntes — Primer Parcial (Clases 1–7)
 
-Contenido para copiar **a mano** en la hoja tamaño carta/A4 (única ayuda
-permitida en el examen, según `Clases/Slides/Reglas e instrucciones para
-evaluaciones escritas.pdf`). Pensado para caber en **las dos caras de una
-sola hoja**: prioriza fórmulas, tablas y listas que no se pueden derivar en
-el momento — lo que sí se puede razonar en el momento (por qué falla
-cascada, qué es DevOps, por qué documentar) no está aquí a propósito.
+Contenido para copiar **a mano** en la hoja tamaño carta/A4 (única ayuda permitida en el examen).
+Pensado para caber en **dos caras de una sola hoja**.
 
-Distribución sugerida: **Cara 1** = Clases 2, 4, 5 (conceptos y proceso).
-**Cara 2** = Clases 6, 7 (atributos de calidad con tácticas/patrones, lo más
-denso).
+Distribución: **Cara 1** = Clases 2–5. **Cara 2** = Clases 6–7.
 
 ---
 
 ## CARA 1
 
-### Clase 2 — Atributos de calidad (definición en una línea c/u)
-- **Availability**: responde cuando se requiere (Reliability+Recovery+Fault-tolerance)
-- **Deployability**: facilidad de poner en producción una nueva versión
-- **Integrability**: facilidad/costo de integrarse con otros sistemas
-- **Modifiability**: facilidad de cambio (Mantenibilidad+Escalabilidad+Portabilidad)
-- **Performance**: tiempo/velocidad, uso de CPU/memoria
-- **Safety**: "no mates a nadie" — criticidad = pérdida × stakeholders afectados
-- **Security**: **CIA** = Confidentiality, Integrity, Availability
-- **Testability**: encontrar errores, controlar entradas/salidas, reproducir fallos
-- **Usability**: aprendizaje, eficiencia, tolerancia a errores, satisfacción
+### Clase 2 — Atributos de Calidad (9 totales)
 
-**Arq. vs diseño detallado**: largo plazo/impacto general/estratégica ↔
-corto plazo/impacto acotado/táctica.
+| Atributo | Definición | Ejemplo |
+|---|---|---|
+| **Availability** | Responde cuando se necesita (confiabilidad+recuperación) | 99.99% uptime = 52.6 min downtime/año |
+| **Deployability** | Nuevas versiones en producción rápido/sin parada | Blue/Green, Rolling Upgrade |
+| **Integrability** | Costo/facilidad de integrarse con otros sistemas | APIs, contratos, formato datos |
+| **Modifiability** | Costo de cambio (agregar features, refactor) | arquitectura modular |
+| **Performance** | Tiempo/CPU/memoria bajo carga | latency p95 < 500ms, throughput > 1000 req/s |
+| **Safety** | No causa daño físico | criticidad = pérdida × stakeholders |
+| **Security** | **CIA**: Confidentiality, Integrity, Availability | encriptación, autenticación, autorización |
+| **Testability** | Encontrar errores rápido; reproducibles | coverage > 80%, aislamiento de módulos |
+| **Usability** | Aprendizaje, eficiencia, tolerancia a errores | UX metrics, facilidad de aprender |
 
-**Vistas 4+1**: Logical, Development, Process, Physical, + Scenarios.
+**Architectura vs. Diseño**: Arq. = largo plazo, impacto general, estratégica.
+Diseño = corto plazo, acotado, táctico.
 
-**CAP**: solo 2 de 3 — Consistency, Availability, Partition tolerance.
+**Vistas 4+1** (cada una resuelve preocupación diferente):
+- **Logical**: clases del dominio (OO), relaciones, herencia. Ej: User, Order, Product
+- **Development**: paquetes/módulos, estructura del código fuente. Ej: com.app.services, com.app.dao
+- **Process**: hilos/procesos, comunicación concurrente. Ej: thread pool, async tasks
+- **Physical**: máquinas, base datos, despliegue, red. Ej: load balancer, app server, BD
+- **Scenarios**: narrativas, flujos de casos de uso. Ej: "Usuario compra entrada"
 
-**Estilos arquitectónicos** (reconocer por nombre): Layered/N-Tier, Modular
-Monolith, Pipe-and-Filter, Microkernel, Service-based, Event-driven, ESB
-(orchestration SOA), Microservices, CQRS, Broker-domain.
+**CAP Theorem**: 3 propiedades, solo **2 de 3** posibles en sistemas distribuidos:
+- **Consistency**: todos los nodos ven el mismo estado simultáneamente
+- **Availability**: el sistema siempre responde (no timeout)
+- **Partition tolerance**: tolera desconexión entre nodos
+Ejemplos: CA (BD centrales), CP (banking), AP (redes sociales).
 
-### Clase 3 — Proceso
-- Cascada falla porque: **requisitos no se conocen completos de entrada**.
-- **Cono de incertidumbre** (McConnell 1998): el rango de estimación se
-  reduce con el tiempo.
-- **DevOps** = Config. management + Pruebas automáticas + Integración
-  frecuente.
-- **BDUF** (fijo al inicio) < **Iteración 0** (pico inicial + refinamiento,
-  **recomendado**) < **Emergente** (ágil puro, sin diseño inicial).
-- Arquitecto vs Ing. de requisitos: éste entrega RF/RNF; el arquitecto los
-  prioriza y saca los **ASR**.
-- Ágil + Arq. compatibles, **excepto**: en sistemas complejos sí hace falta
-  documentación formal y roles capacitados (no solo cara a cara/auto-org.).
+**Estilos Arquitectónicos** (19 estilos para reconocer):
+Layered, Modular Monolith, Pipe-and-Filter, Microkernel, Service-based, Event-driven,
+ESB (orchestration SOA), Microservices, CQRS, Broker-domain.
 
-### Clase 4 — Notación
-**Formalidad**: informal < semi-formal (**C4**, UML, SysML, ArchiMate) <
-formal (ADL: Rapide, Wright).
+---
 
-**4+1 → diagrama**: Logical→clases · Process→secuencia/actividad/estados ·
-Development→paquetes/componentes · Physical→despliegue.
+### Clase 3 — Proceso de Desarrollo
 
-**C4 jerarquía**: Context → Container → Component → Code.
-**C4 auxiliares**: System Landscape, Dynamic, Deployment.
+**Por qué falla Cascada**: requisitos no se conocen **completos al inicio** →
+necesita iteración para refinamiento.
 
-**C4 ↔ 4+1**:
+**Cono de Incertidumbre** (McConnell 1998): rango de estimación se reduce con tiempo.
+
+**Espectro de diseño**:
+1. **BDUF** (Big Design Up Front): todo el diseño fijo al inicio. Alto riesgo.
+2. **Iteración 0** (recomendado ⭐): pico inicial de diseño + refinamiento iterativo.
+   Equilibra riesgo y adaptación.
+3. **Emergente**: diseño evoluciona completamente con código (ágil puro, riesgoso
+   en sistemas complejos).
+
+**DevOps**: Config. management + Pruebas automáticas + Integración frecuente.
+Cierra brecha entre desarrollo y operaciones.
+
+**Ágil + Arquitectura**: compatibles, EXCEPTO: en sistemas complejos sí necesita
+**documentación formal** y **roles capacitados** (no solo auto-organización).
+
+**Roles**:
+- **Ing. de Requisitos**: entrega RF (requisitos funcionales) y RNF (no funcionales) crudos
+- **Arquitecto**: **prioriza** RF/RNF, extrae **ASR** (reqs arquitectónicamente significativos)
+
+---
+
+### Clase 4 — Notación y Diagramas
+
+**Formalidad**: Informal < Semi-formal (C4, UML, SysML, ArchiMate) < Formal (ADL).
+
+**4+1 → Diagrama**:
+- Logical → Clases UML (dominio OO)
+- Development → Paquetes/componentes UML (código)
+- Process → Secuencia/estado UML (flujos)
+- Physical → Despliegue UML (máquinas)
+- Scenarios → Narrativas y secuencias (casos uso)
+
+**C4 — 4 niveles jerárquicos**:
+1. **Context**: sistema en contexto (usuarios externos, sistemas externos)
+2. **Container**: aplicaciones, BDs, servicios, APIs (tecnología explícita)
+3. **Component**: módulos dentro de un container
+4. **Code**: clases/funciones en un componente
+**Auxiliares**: System Landscape, Dynamic, Deployment.
+
+**C4 ↔ 4+1 mapeo**:
 | C4 | 4+1 |
 |---|---|
-| Context / Sys. Landscape | Scenarios |
-| Container / Component | Development |
+| Context, System Landscape | Scenarios |
+| Container, Component | Development |
 | Code | Logical |
 | Deployment | Physical |
 | Dynamic | Process |
 
-### Clase 5 — Diseño arquitectónico
-`Stakeholder` tiene `Preocupación` (según `Punto de vista`) → resuelta por
-`Vista`.
+---
 
-**ASR** = requisito (típ. no funcional) con impacto fuerte en la
-arquitectura — sin él, la arquitectura sería drásticamente distinta.
+### Clase 5 — Diseño Arquitectónico
 
-**Árbol de Utilidad**: Utilidad → Atributo de calidad → sub-atributo →
-Escenario, con prioridad **(Importancia, Dificultad)** ej. (H,H).
+**Triada fundamental**: Stakeholder tiene Preocupación (según Punto de Vista) →
+resuelta por Vista arquitectónica.
 
-**ADD — 7 pasos, EN ORDEN**:
-1. Revisar entradas
-2. Definir objetivos (qué ASR de esta iteración)
-3. Seleccionar elementos del sistema a refinar
-4. Seleccionar conceptos de diseño (patrones/referencias/tecnologías)
-5. Instanciar elementos, asignar responsabilidades, definir interfaces
-6. Bosquejar vistas y registrar decisiones
-7. Analizar resultados
+**ASR** (Architectural Significant Requirement): requisito con **impacto fuerte**
+en la arquitectura. Sin él, la arquitectura sería **drásticamente distinta**.
+Típicamente no-funcional, pero no todo RNF es ASR.
+
+**Árbol de Utilidad (Utility Tree)**:
+```
+Utilidad
+├─ Atributo (Availability, Performance, etc.)
+   ├─ Sub-atributo (ej. "Resiliencia ante BD down")
+      └─ Escenario concreto, Prioridad (Importancia, Dificultad)
+         Ej. (H,H) = crítico y difícil
+```
+
+**ADD — 7 Pasos, EN ORDEN**:
+1. **Revisar entradas**: requisitos, restricciones, contexto
+2. **Definir objetivos**: qué ASR refinamos esta iteración
+3. **Seleccionar elementos a refinar**: qué partes del sistema
+4. **Seleccionar conceptos de diseño**: patrones, referencias, techs
+5. **Instanciar elementos**: responsabilidades, interfaces
+6. **Bosquejar vistas**: diagramas, registrar decisiones (ADR)
+7. **Analizar resultados**: ¿se cumplen ASR? ¿nuevos riesgos?
 
 ---
 
@@ -94,68 +133,105 @@ Escenario, con prioridad **(Importancia, Dificultad)** ej. (H,H).
 
 ### Clase 6 — Disponibilidad (Availability)
 
-**Cadena causal**: Fault → Error → Failure → interrupción de servicio →
-**Downtime**. Se resuelve con Resiliencia = Detección + Recuperación +
-Prevención.
+**Cadena causal de fallos**:
+```
+Fault (defecto) → Error (estado inválido) → Failure (servicio cae) → Downtime
+```
+Se resuelve con: Resiliencia = Detectar + Recuperar + Prevenir.
 
-**Fórmula**: `Disponibilidad = MTBF / (MTBF + MTTR)`
-(MTBF = tiempo medio entre fallas · MTTR = tiempo medio de reparación)
+**Fórmula de disponibilidad** (memorizar):
+```
+Disponibilidad = MTBF / (MTBF + MTTR)
+```
+- **MTBF** = Mean Time Between Failures (horas sin caída, ej. 500h)
+- **MTTR** = Mean Time To Repair (horas para reparar, ej. 2h)
+- Para mejorar: ↑MTBF (software más confiable) OR ↓MTTR (recuperación rápida)
 
-**Tabla SLA (downtime/año)**:
+**Tabla SLA (downtime permitido/año)**:
 | Disp. | Downtime/año |
 |---|---|
 | 99.0% | ~3.6 días |
-| 99.9% | ~8.8 h |
-| 99.99% | ~52.6 min |
-| 99.999% | ~5.3 min |
-| 99.9999% | ~32 s |
+| 99.9% | ~8.8 horas |
+| 99.99% | ~52.6 minutos |
+| 99.999% (5 nines) | ~5.3 minutos |
+| 99.9999% (6 nines) | ~32 segundos |
 
-**Tácticas — 3 grupos**:
-- *Detectar*: monitoreo, ping/echo, heartbeat/watchdog, timestamp, sanity
-  check, voting, detección de excepciones, self-test.
-- *Recuperar*: redundant spare, rollback, retry, **graceful degradation**,
-  reconfiguración, shadow, resincronización, reinicio escalado, nonstop
-  forwarding.
-- *Prevenir*: dar de baja temporal, transacciones (ACID/2PC/**SAGA**),
-  modelo predictivo, prevención de excepciones, incrementar estados
-  competentes.
+**Tácticas de Disponibilidad — 3 Grupos**:
 
-**Redundancia — 3 niveles**:
-| Tipo | Nodos activos | Costo | Disponibilidad |
-|---|---|---|---|
-| Activa (hot) | Todos, sync constante | Alto | Alta |
-| Pasiva (warm) | Subconjunto + shadow | Medio | Media |
-| Repuesto (cold) | Apagados hasta la falla | Bajo | Baja |
+**A) Detectar fallo**:
+- Monitoreo, ping/echo, heartbeat/watchdog
+- Sanity check, votación (3+ nodos), excepciones, self-test
 
-**TMR** (Triple Modular Redundancy): 3+ sistemas, gana la mayoría.
-**Circuit Breaker**: monitor externo, limita reintentos (Resilience4j).
+**B) Recuperar**:
+- Redundant spare (stand-by)
+- Rollback, retry
+- **Graceful degradation** (funcionalidad reducida, no crash total)
+- Reconfiguración, resincronización, nonstop forwarding
+
+**C) Prevenir**:
+- Dar de baja temporal (quarantine/circuit breaker)
+- Transacciones (ACID, 2PC)
+- **SAGA** (transacción distribuida compensatoria)
+- Modelo predictivo, excepciones, incrementar estados competentes
+
+**Redundancia — 3 Niveles**:
+| Tipo | Nodos activos | Sincronización | Costo | Disponibilidad |
+|---|---|---|---|---|
+| **Activa (hot)** | Todos, constantemente | Sync frecuente | Alto | Alta (sin lag) |
+| **Pasiva (warm)** | Subconjunto + standby | Parcial | Medio | Media (lag corto) |
+| **Repuesto (cold)** | Apagados, se encienden al fallo | Ninguna | Bajo | Baja (lag largo) |
+
+**Patrones de Disponibilidad principales**:
+- **Redundancia activa** (hot spare): todas las instancias activas, datos sincronizados
+- **Redundancia pasiva** (warm spare): una activa, una en standby sincronizándose
+- **TMR** (Triple Modular Redundancy): 3+ sistemas idénticos, gana la mayoría (votación)
+- **Circuit Breaker**: monitor limita reintentos fallidos, evita cascada (herr. Resilience4j)
+
+**⚠️ NOTA CRÍTICA**: Rolling Upgrade, Blue/Green, Canary, A/B Testing son patrones de
+**DESPLEGABILIDAD (Clase 7)**, NO de Disponibilidad.
+
+---
 
 ### Clase 7 — Desplegabilidad (Deployability)
 
-**5 ambientes, en orden**: Development → Repositorio de código →
-Integration → Staging → Production (patrón Shadow→Monitoreo→Reintroducción).
+**Ambiente de despliegue** (5 ambientes, en orden):
+```
+Development → Repo código → Integration → Staging → Production
+```
+Patrón: Shadow (replica) → Monitoreo → Reintroducción.
 
-**Calidad del pipeline**: Cycle Time (spec→producción), Trazabilidad,
-Repetibilidad.
+**Calidad del pipeline**:
+- **Cycle Time**: spec → producción (meta: corto, ej. < 1 día)
+- **Trazabilidad**: quién desplegó qué cuándo (auditoría)
+- **Repetibilidad**: mismo script, mismo resultado (automatización)
 
-**Tácticas — 2 grupos**:
-- *Administrar el pipeline*: Scaled Rollouts, Scripts de despliegue,
-  Rollback.
-- *Administrar el sistema desplegado*: Manage Service Interactions
-  (service registry, traffic splitting, circuit breaker), Package
-  Dependencies (contenedores/VMs), Feature Toggle (Kill Switch).
+**Tácticas de Desplegabilidad — 2 Grupos**:
 
-**Patrones de reemplazo**:
-| Patrón | Instancias | Downtime | Riesgo |
+**A) Administrar el pipeline**:
+- Scaled Rollouts (despliegues graduales)
+- Scripts de despliegue (automatización)
+- Rollback (revertir a versión anterior)
+
+**B) Administrar sistema desplegado**:
+- Manage Service Interactions: service registry, traffic splitting, circuit breaker
+- Package Dependencies: contenedores (Docker), VMs
+- Feature Toggle (Kill Switch): encender/apagar features sin redeploy
+
+**Patrones de reemplazo** (4 patrones principales):
+| Patrón | Instancias | Downtime | Cuándo usar |
 |---|---|---|---|
-| Blue/Green | 2×N | Ninguno (corte tráfico) | Más costoso |
-| Rolling Upgrade | N+1 | Ninguno, gradual | Inconsistencia temporal |
-| Canary Testing | Subconj. usuarios reales | — | Enrutamiento selectivo |
-| A/B Testing | A vs B, comparar métricas | — | Esfuerzo de instrumentación |
+| **Blue/Green** | 2 sets completos (A↔B) | Ninguno (corte tráfico instantáneo) | Cambio atómico, reversión rápida |
+| **Rolling Upgrade** | N+1 (gradual, una por una) | Ninguno (gradual) | Economía, menos recursos |
+| **Canary** | Subconjunto usuarios reales | — | Validar en producción antes de liberar |
+| **A/B Testing** | A vs B, ambos en paralelo | — | Elegir ganador comparando métricas |
 
-**Canary** = probar con usuarios reales antes de liberar a todos
-(seguridad). **A/B** = comparar dos versiones para *elegir* cuál se queda
-(experimento). No confundirlos.
+**Distinciones críticas** (errores comunes en examen):
+- **Canary**: probar CON usuarios reales antes de liberar a todos (validación, seguridad)
+- **A/B Testing**: comparar dos versiones para ELEGIR cuál se queda (experimento negocio)
+- **Rolling Upgrade**: reemplazo **gradual** (N+1 instancias, una cae, otra sube)
+- **Blue/Green**: reemplazo **atómico** (dos sets completos, switch instantáneo)
 
-**Estructuración de servicios**: desplegabilidad independiente = empaquetar
-dependencias + administrar interacciones entre servicios.
+**Estructuración de servicios para Desplegabilidad independiente**:
+- Empaquetar dependencias (contenedores + librerías)
+- Administrar interacciones (service registry, API versioning)
+- Sin acoplamiento de despliegue (cada servicio despliega solo)
