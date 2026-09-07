@@ -95,6 +95,47 @@ están genuinamente **sin decidir**, no solo sin evidencia. Las demás ya
 tienen una decisión funcionando; hay que respaldarla, pero no bloquean
 avanzar mientras tanto.
 
+### Cómo cerrar la decisión #2 — lenguaje/framework del backend (paso a paso)
+
+1. **El equipo elige 2-3 candidatos reales** en una llamada/reunión corta
+   (no más de 3, o el PoC se vuelve inmanejable) — sugeridos por lo que ya
+   se usa en el resto del stack: **Node.js/Express** o **NestJS**
+   (TypeScript, mismo lenguaje que los portales Angular — reduce el
+   cambio de contexto del equipo) vs. **Java/Spring Boot** (tipado fuerte,
+   ecosistema maduro para microservicios) vs. **Go** (si alguien ya lo
+   conoce; mejor rendimiento crudo pero curva de aprendizaje nueva para
+   el equipo).
+2. **Implementar el mismo endpoint mínimo** en cada candidato: `GET
+   /entradas/{id}/disponibilidad` que responda un JSON fijo (no hace falta
+   BD real todavía) — esto ya es un PoC-04 legítimo.
+3. **Benchmark de carga**: usar `k6` o `autocannon` (Node) o `wrk` para
+   simular 500-2000 solicitudes concurrentes contra cada implementación,
+   corriendo en la misma máquina/condiciones. Medir: solicitudes/segundo,
+   latencia p95, uso de memoria del proceso.
+4. **Registrar el resultado** en `Proyecto/App/PoCs/poc-04-lenguaje-backend/`
+   con el mismo formato que los PoCs 1 y 2.
+5. **Redactar ADR-05** (o el número que corresponda tras el de la app
+   móvil) en `DescripcionArquitecturaSoftware.tex`, actualizar
+   `Proyecto/App/README.md` (fila "services/\* — Por definir" de la tabla
+   de Stack técnico) y `Proyecto/App/infra/README.md` si aplica.
+
+### Cómo cerrar la decisión #3 — RabbitMQ vs. Kafka (paso a paso)
+
+1. Instalar ambos localmente (`brew install rabbitmq` / correr Kafka vía
+   Docker, ej. imagen `confluentinc/cp-kafka` — más pesado que RabbitMQ de
+   instalar, tenerlo en cuenta como parte de la evidencia).
+2. Implementar el mismo caso real: publicar el evento
+   `ENTRADA_TRANSFERIDA` (ya nombrado en `DescripcionArquitecturaSoftware.tex`
+   § "Vista de procesos") y un consumidor que lo procese, en ambos.
+3. Medir: latencia publicación→consumo, y qué tan fácil fue configurar
+   reintentos/dead-letter-queue en cada uno (cualitativo, pero documentarlo
+   con el número de líneas de configuración que tomó cada uno).
+4. Con el resultado, cerrar el **ADR-04** existente en
+   `DescripcionArquitecturaSoftware.tex` (hoy dice "RabbitMQ/Kafka" —
+   cambiarlo a uno solo, con la evidencia del PoC) y actualizar
+   `Proyecto/App/infra/README.md` y `Proyecto/App/README.md` para que ya
+   no aparezcan ambos como si fueran intercambiables.
+
 ---
 
 ## Ejemplo completo desarrollado: stack de la app móvil (Nativo vs. Flutter)
@@ -189,156 +230,161 @@ realmente hay en el repo.
 
 ## 1. Especificación de casos de uso y RNF
 
-**Estado:** CU ✅ hecho (32 CU en `Submission/CU_eventos_completo.xlsx`).
-RNF ❌ **no existe todavía** — falta crear.
+**Estado: ✅ HECHO (2026-09-06).** CU: 32 CU en
+`Submission/CU_eventos_completo.xlsx`. RNF: **RNF-01 a RNF-16** en
+`Work/DescripcionArquitecturaSoftware.tex`, líneas 176-248 (sección
+"Requisitos No Funcionales", justo después de "Visión general de los
+requisitos funcionales"), uno o más por cada uno de los 14 atributos de
+calidad priorizados, cada uno con métrica y umbral verificable. Tabla
+completa reproducida en la Bitácora (entrada 2026-09-06) y en la
+conversación de esta sesión si necesitas copiarla rápido.
 
-**Qué hay que producir:** una tabla de Requisitos No Funcionales, uno por
-atributo de calidad ya priorizado en `ArchitecturalProposal.tex`, con
-formato medible (no "el sistema debe ser rápido", sino algo verificable):
-
-| ID | RNF | Atributo de calidad | Métrica / umbral |
-|---|---|---|---|
-| RNF-01 | Validación de una entrada en la puerta | Rendimiento | ≤ 500 ms por escaneo, p95 |
-| RNF-02 | El sistema soporta la apertura de venta de un evento masivo | Rendimiento / Disponibilidad | ≥ 2000 solicitudes/seg sin degradar |
-| RNF-03 | Recuperación ante caída de una instancia de validación de QR | Disponibilidad | Failover ≤ 10 s, sin pérdida de transacciones |
-| RNF-04 | Autenticación de usuarios | Seguridad | Tokens JWT con expiración ≤ 1 h, HTTPS obligatorio |
-
-(Son ejemplos de arranque — completar con uno por cada QA de la tabla de
-prioridades, alta y media como mínimo.) Dónde va: nueva sección "Requisitos
-No Funcionales" en `Work/DescripcionArquitecturaSoftware.tex`, justo antes o
-después de "Visión general de los requisitos funcionales".
-
-**Dónde aplican las 3 reglas aquí:** cada RNF debe decir explícitamente el
-atributo de calidad que representa (columna de la tabla) — no hace falta
-alternativas/tecnología en este punto, eso viene en los puntos 3 y 4 (y en
-la auditoría de arriba).
+**Ya no queda trabajo por hacer aquí salvo revisión.** Tareas específicas
+restantes, una por persona/momento:
+1. **Cada integrante lee los RNF de su(s) atributo(s) asignado(s)**
+   (tabla de `Cronograma.md`: I1 Availability/Deployability → RNF-03,04,14;
+   I2 Performance/Modifiability → RNF-01,02,08,11; I3
+   Integrabilidad/Safety/Testability → RNF-13,15,16; I4
+   Security/Usability → RNF-05,10) y confirma si el umbral numérico (ej.
+   "≤500 ms", "≥99.9%") es realista o si prefiere otro número — hoy son
+   estimaciones razonables del asistente, no medidas del equipo.
+2. Si alguien detecta un RNF le falta (ej. un CU sin ningún RNF que lo
+   respalde), agregar una fila nueva a la Tabla \ref{tab:rnf} siguiendo el
+   mismo formato (ID, descripción, atributo, métrica/umbral) — no crear un
+   sistema de numeración paralelo.
+3. **No hace falta tocar nada más de este punto** hasta que el SAD completo
+   se recompile por última vez antes de entregar (ver checklist final).
 
 ---
 
 ## 2. ASR (Árbol de Utilidad)
 
-**Estado:** 🟡 primer borrador ya existe (ASR-01..10 en
-`DescripcionArquitecturaSoftware.tex`, 2026-08-25), sin copiar aún a
-`Submission/`.
+**Estado: ✅ HECHO (2026-09-06).** Tabla \ref{tab:asr} en
+`Work/DescripcionArquitecturaSoftware.tex`, con **12 ASR** (ASR-01 a
+ASR-10 del borrador original + **ASR-11** Integrabilidad y **ASR-12**
+Desplegabilidad, agregados el 2026-09-06), cada uno con el par
+**(Importancia, Dificultad)** en escala Alta/Media/Baja — ya no es una
+sola columna de "Prioridad" genérica.
 
-**Qué falta:** que el equipo completo lo revise (hoy lo hizo el asistente a
-partir de la tabla de prioridades, no cada integrante). Para cada ASR,
-confirmar que:
-- El escenario esté en formato completo Fuente/Estímulo/Artefacto/Entorno/
-  Respuesta/Medida de respuesta (formato Bass/Kazman de escenario de
-  calidad), no solo una frase.
-- Tenga su par (Importancia, Dificultad) en escala H/M/L, y que los
-  priorizados como (H,H) sean justamente los que después reciben PoC
-  (punto 4) — así el árbol deja de ser un documento aislado y se conecta
-  con el resto de la entrega.
-
-**No requiere alternativas de tecnología** (el Árbol de Utilidad es sobre
-requisitos, no sobre soluciones) — pero cada ASR sí debe decir de qué
-atributo de calidad priorizado se deriva (ya lo hace).
+**Tareas específicas restantes:**
+1. **Cada integrante revisa los ASR de su(s) CU propios** (columna
+   "Funcionalidades" de la tabla) y confirma si el par (Importancia,
+   Dificultad) que puso el asistente le parece correcto — hoy son
+   estimaciones a partir del catálogo de clase, no una votación del equipo.
+   Ejemplo concreto: Daniel Cristancho revisa ASR-01 (CU-006, aunque el
+   dueño de CU-006 es Samuel Emperador — Daniel sí es dueño de CU-021..023,
+   relacionados con ASR-06/ASR-08 de Parqueaderos).
+2. Si el equipo decide que un escenario merece más detalle en formato
+   Fuente/Estímulo/Artefacto/Entorno/Respuesta/Medida de respuesta
+   completo (hoy la columna "Escenario" los combina en una frase), expandir
+   esa fila sin borrar las demás.
+3. **No requiere alternativas de tecnología ni PoC** — el Árbol de
+   Utilidad es sobre requisitos, no sobre soluciones; eso ya se cubre en
+   los puntos 3 y 4.
 
 ---
 
 ## 3. Diseño arquitectónico con tácticas de QA (clases 6–14)
 
-**Estado:** 🟡 el hueco más grande. Solo **Disponibilidad** (Clase 6) está
-hecho (2026-08-25). Faltan **7 atributos**: Deployability, Performance,
-Modifiability, Integrabilidad, Safety, Security, Testability, Usability —
-repartidos así (`Cronograma.md`):
+**Estado: ✅ HECHO (2026-09-06)** para los 9 atributos de las clases 6-14.
+Disponibilidad ya estaba (2026-08-25); el 2026-09-06 se agregaron los 8
+restantes en `Work/ArchitecturalProposal.tex` § "Cómo la arquitectura
+satisface los atributos de calidad", cada uno con tabla de
+escenario/táctica/patrón (o Five Planes para Usabilidad) comparando ≥2
+alternativas:
 
-| Atributo | Responsable |
-|---|---|
-| Deployability | I1 |
-| Performance, Modifiability | I2 |
-| Integrabilidad, Safety, Testability | I3 |
-| Security, Usability | I4 |
+| Atributo | Responsable (`Cronograma.md`) | Dónde está | Tiene PoC propio |
+|---|---|---|---|
+| Disponibilidad | I1 | § "Disponibilidad -- Alta" | No, pero PoC-01 lo toca indirectamente (Redis) |
+| Desplegabilidad | I1 | § "Desplegabilidad -- Media" | No — necesita el PoC de failover (punto 4) |
+| Rendimiento | I2 | § "Rendimiento -- Alta" | Parcial — PoC-02 (QR) toca este atributo, resultado no concluyente |
+| Modificabilidad | I2 | § "Mantenibilidad -- Baja-Media" | No |
+| Integrabilidad | I3 | § "Integrabilidad -- Media" | No |
+| Safety | I3 | § "Seguridad física (Safety) -- Baja" | No (prioridad baja, aceptable sin PoC) |
+| Comprobabilidad (Testability) | I3 | § "Comprobabilidad (Testability) -- Media" | No |
+| Seguridad | I4 | § "Seguridad -- Alta" | No |
+| Usabilidad | I4 | § "Usabilidad -- Baja-Media" (Five Planes, no tácticas) | No aplica (no es de tácticas Bass/Kazman) |
 
-**Qué debe producir cada responsable, por atributo** (mismo formato que ya
-existe para Disponibilidad en la Bitácora del 2026-08-25 — usarlo de
-plantilla) — pero ahora con las 3 reglas obligatorias:
+**Tareas específicas restantes, una por responsable** (no hay que
+redactar nada nuevo — es revisar y, donde aplique, reforzar con PoC):
 
-1. Identificar 2–4 escenarios reales del proyecto para ese atributo (no
-   genéricos — específicos a HEXACORE: ej. para Performance, "la apertura
-   de venta de HEXACORE Fest genera 5000 solicitudes concurrentes al
-   servicio de Entradas en el primer minuto").
-2. Para cada escenario, **elegir al menos 2 tácticas o patrones candidatos**
-   del catálogo de la clase correspondiente (`Clases/Notes/`), compararlos
-   (ventaja/desventaja para ese escenario puntual), y elegir uno —
-   explícitamente marcado con la plantilla de la sección "Regla de oro".
-3. Adjuntar **evidencia**: si el atributo tiene un PoC asociado (ver punto
-   4), citarlo aquí. Si no alcanza a tener PoC propio, al menos una
-   comparación técnica citando fuentes (documentación oficial, benchmark
-   publicado) — nunca una elección sin respaldo.
-4. Documentar en `BitacoraArquitectonica.md` (entrada nueva, una por
-   atributo) y reflejar la tabla resultante en
-   `Work/ArchitecturalProposal.tex`, igual que se hizo con Disponibilidad.
-
-**Ejemplo concreto para no partir de cero — Deployability (I1):**
-- Escenario: "hay que desplegar un hotfix al servicio de validación de QR
-  mientras hay ingreso masivo activo a un evento, sin interrumpir
-  validaciones en curso."
-- Alternativas de patrón: **Rolling Upgrade** (solo N+1 instancias, pero
-  puede haber inconsistencia temporal de versiones) vs. **Blue/Green**
-  (sin inconsistencia de versiones, pero requiere 2×N instancias — más
-  costoso durante un evento en vivo, que es justo cuando más instancias
-  activas hay).
-- Decisión razonable: Blue/Green para este escenario puntual (evento en
-  vivo, prioridad es cero downtime sobre costo), Rolling Upgrade para
-  actualizaciones fuera de horario de evento.
-- Evidencia: puede ser un PoC pequeño (levantar 2 versiones de un servicio
-  de ejemplo detrás de un balanceador y medir el tiempo sin downtime al
-  cambiar tráfico) o, si no alcanza el tiempo, documentación citada sobre
-  el patrón + la justificación de por qué aplica al escenario.
-
-**Prioriza los atributos priorizados como "Alta"** en
-`ArchitecturalProposal.tex` si el tiempo no alcanza para los 7 — es
-preferible tener 4-5 bien evidenciados que 7 superficiales.
+1. **Cada responsable (I1-I4) lee la subsección de SU atributo** en
+   `ArchitecturalProposal.tex` y confirma que los escenarios elegidos son
+   realistas y que la elección entre alternativas le parece correcta —
+   hoy todas fueron redactadas por el asistente a partir del catálogo de
+   clase, no discutidas en equipo.
+2. **I1** decide si vale la pena construir el PoC de failover (punto 4,
+   3er PoC pendiente) para respaldar con datos medidos la elección
+   Blue/Green vs. Rolling Upgrade de Desplegabilidad — hoy es solo
+   razonamiento, no evidencia medida.
+3. **I2** decide si el resultado inconcluso de PoC-02 (UUID vs. JWT para
+   QR) debe resolverse antes de entregar, o si se documenta como
+   "decisión pendiente, con plan de PoC de seguimiento" en el propio SAD
+   — ambas opciones son honestas, la guía no fuerza ninguna.
+4. **I3 e I4** no tienen PoC pendiente asociado a sus atributos — su única
+   tarea es la revisión del punto 1. Si alguno quiere subir el nivel de
+   evidencia, puede construir un PoC propio siguiendo el mismo formato de
+   `Proyecto/App/PoCs/poc-01-bloqueo-concurrencia/README.md` (opcional,
+   no bloqueante).
 
 ---
 
 ## 4. Pruebas de concepto (PoCs) de los 2–3 desafíos técnicos más complejos
 
-**Estado:** ❌ no existe ningún PoC todavía. Este es el punto que genera la
-**evidencia** que piden los puntos 1, 3, 5 y 6, y también la mayoría de
-filas de la auditoría de decisiones — es el más importante de priorizar
-cronológicamente, antes que redactar los análisis de QA, porque sin PoC no
-hay pruebas que citar.
+**Estado: ✅ 2 de 2-3 HECHOS (2026-09-06)**, código real y ejecutable en
+`Proyecto/App/PoCs/` (índice en `PoCs/README.md`):
 
-**Candidatos** (de `Cronograma.md`, ajustar con el equipo — nótese que el
-#1 y el #4 de la tabla de auditoría de decisiones se resuelven con estos
-mismos PoCs, no hace falta duplicar esfuerzo):
-1. **Bloqueo de concurrencia en reventa de entradas** (Redis `SETNX`/
-   distributed lock) — demuestra Disponibilidad/Consistencia bajo
-   concurrencia, y resuelve la fila #4 de la auditoría. Comparar contra
-   **al menos una alternativa**: bloqueo optimista en base de datos
-   (version/timestamp) o `SELECT FOR UPDATE`. Medir: % de ventas
-   duplicadas con N compradores simulados comprando la misma entrada al
-   mismo tiempo, con y sin la táctica.
-2. **Generación/validación de QR a escala** — demuestra Rendimiento. Medir
-   tiempo de generación/validación bajo carga (ej. 1000 validaciones/seg
-   simuladas) comparando **al menos 2 librerías o estrategias** (ej. QR
-   firmado con JWT vs. UUID + consulta a BD).
-3. **Failover de una instancia caída** (API Gateway o servicio de Entradas)
-   — demuestra Disponibilidad. Comparar **al menos 2 estrategias**: réplica
-   activa detrás de balanceador vs. réplica pasiva con reinicio automático.
-   Medir tiempo de recuperación real (segundos) en cada una.
-4. **(Recomendado añadir, dado el hueco #2 de la auditoría)**: benchmark
-   del lenguaje/framework del backend — es el desafío técnico más urgente
-   de resolver porque bloquea empezar a codificar `services/*`.
+1. **PoC-01 — Bloqueo de concurrencia** (`poc-01-bloqueo-concurrencia/`):
+   compara sin bloqueo vs. optimista (BD) vs. Redis. **Resultado:** sin
+   protección, 30/30 trials tuvieron venta duplicada (hasta 50 ventas
+   simultáneas); con Redis u optimista, 0/30. Confirma ADR-03 y resuelve
+   la fila #4 de la auditoría de decisiones.
+2. **PoC-02 — Validación de QR** (`poc-02-validacion-qr/`): compara
+   UUID+BD vs. JWT firmado. **Resultado no concluyente**: en SQLite local,
+   UUID+BD midió más rápido (8.0 ms vs. 11.1 ms) porque el benchmark no
+   tenía latencia de red real — decisión abierta a propósito.
 
-**Formato de cada PoC:** código real y ejecutable (no pseudocódigo), en el
-repo de código `HEXACORE` (o en el repo personal del integrante si es
-exploratorio, antes de llevarlo al PoC oficial — ver `TASKS.md`). Cada PoC
-debe dejar:
-- El código fuente, versionado.
-- Un `README.md` corto: qué desafío ataca, qué alternativas comparó, cómo
-  correrlo, y el resultado medido (tabla o gráfica simple).
-- Un enlace desde el ADR/análisis de QA correspondiente ("ver PoC-01") y
-  desde la entrada de la Bitácora que documenta la decisión.
+**Tarea específica pendiente — 3er PoC (failover), paso a paso:**
+1. Elegir el componente a simular: recomendado el **API Gateway** (más
+   crítico, ASR-02) o el Servicio de Entradas.
+2. Escribir 2 procesos HTTP mínimos en Python (`http.server` o `Flask`)
+   que representen "instancia activa" e "instancia de respaldo", cada uno
+   respondiendo en un puerto distinto.
+3. Implementar **2 estrategias** a comparar en un script orquestador:
+   - *Réplica activa*: ambas instancias corriendo desde el inicio; un
+     "balanceador" (un tercer script) enruta a la primera que responda al
+     `health-check`.
+   - *Réplica pasiva*: la instancia de respaldo arranca (se lanza como
+     subproceso) solo cuando el `health-check` de la activa falla.
+4. Matar la instancia activa a mitad de una ráfaga de solicitudes
+   simuladas (`for` con `requests.get`) y medir, para cada estrategia,
+   **cuántas solicitudes fallan** y **cuántos segundos tarda** en volver a
+   responder el 100% de las solicitudes.
+5. Guardar el resultado en `Proyecto/App/PoCs/poc-03-failover/README.md`
+   con la misma estructura que los otros dos (desafío, alternativas,
+   cómo correrlo, tabla de resultado, decisión, riesgos), y agregar la fila
+   correspondiente a `PoCs/README.md`.
+6. Enlazar el resultado desde § "Disponibilidad" o "Desplegabilidad" de
+   `ArchitecturalProposal.tex` y desde una entrada nueva en la Bitácora.
 
-**Aquí es donde las 3 reglas del usuario se cumplen al 100%**: cada PoC
-*es* la comparación de ≥2 alternativas, *es* la evidencia, y nace de un
-atributo de calidad concreto (el que motivó elegirlo como "desafío
-complejo").
+**Tarea específica pendiente — cerrar la decisión de PoC-02 (QR):**
+1. Modificar `poc-02-validacion-qr/poc.py`: agregar un `time.sleep(0.002)`
+   (2 ms, una latencia de red típica dentro de la misma región de nube)
+   dentro de cada operación de base de datos, para simular que la BD ya no
+   es local.
+2. Volver a correr `python3 poc.py` y comparar el resultado nuevo contra
+   el ya documentado en el README — si con latencia simulada `jwt_firmado`
+   sí gana, esa es la evidencia que faltaba; si sigue perdiendo, documentar
+   esa conclusión también (sigue siendo válida, solo distinta a la
+   hipótesis inicial).
+3. Actualizar `poc-02-validacion-qr/README.md` con el resultado nuevo y
+   escribir la decisión final en un ADR (ADR-06 sugerido) en
+   `DescripcionArquitecturaSoftware.tex`.
+
+**Formato de cada PoC** (ya aplicado en los 2 existentes, mantenerlo en el
+3ro): código real y ejecutable, con `README.md` (desafío, alternativas,
+cómo correrlo, resultado medido), y enlace desde el ADR/análisis de QA
+correspondiente y desde la Bitácora.
 
 ---
 
@@ -350,20 +396,47 @@ como "el CU complejo de cada integrante con sus QA implementados" — y,
 como quedó dicho en la auditoría, la elección misma de ese stack todavía no
 tiene su ADR con evidencia (fila #8).
 
-**Qué hacer:**
-1. Cada integrante identifica, de sus ≥5 CU propios, cuál es el más
-   complejo (el que ya tiene "Atributos de Calidad Asociados" e
-   "Infraestructura No Trivial" más ricos en
-   `Submission/CU_eventos_completo.xlsx`).
-2. Implementa (o recorta del código ya existente en `app-movil`/`app-ios`/
-   los portales web) ese CU puntual, mostrando explícitamente en
-   funcionamiento la táctica de calidad que le corresponde a su atributo
-   asignado (tabla de `Cronograma.md`) — no basta con que la pantalla
-   exista, tiene que **demostrar** la táctica (ej. si es Seguridad, mostrar
-   el flujo de autenticación real, no un login mock que acepta cualquier
-   contraseña).
-3. Deja evidencia demostrable: captura de pantalla, GIF corto, o mejor,
-   poder correrlo en vivo el día de la entrega/sustentación.
+**Qué hacer, específicamente por persona:**
+
+- **Samuel Emperador** ya tiene sus 2 CU complejos identificados y
+  reconocidos en el SAD como "hilo conductor": **CU-006** (Mercado
+  secundario de entradas — Consistencia/ASR-01, ya con PoC-01 real) y
+  **CU-010** (Evacuación ante emergencias — Disponibilidad/Safety). Tarea
+  concreta: implementar el flujo de CU-006 (publicar en reventa → comprar
+  → bloqueo Redis → transferencia) reutilizando la lógica de `poc-01` como
+  base del backend real, y el flujo de CU-010 en el Portal Web
+  Administrativo (`portal-web-admin`, sección "Emergencias" — hoy
+  placeholder "en construcción").
+- **Daniel Cristancho, Sebastián Sánchez, Diego Coronado** todavía no
+  tienen un CU complejo formalmente identificado en el SAD (solo Samuel
+  tiene los 2 "hilo conductor"). Procedimiento exacto para elegir el
+  propio, sin adivinar:
+  1. Abrir `Submission/CU_eventos_completo.xlsx`, ir a cada una de sus 8
+     hojas de CU.
+  2. Revisar las columnas "Atributos de Calidad Asociados" e
+     "Infraestructura No Trivial Utilizada" — elegir la hoja donde esas
+     dos columnas ya mencionan algo concreto (Redis, colas, validación
+     compleja), no una frase genérica.
+  3. Si ninguna de las 8 tiene contenido rico ahí, completar esa sección
+     primero (siguiendo el mismo nivel de detalle que CU-006) antes de
+     declararla "compleja" — no basta con etiquetarla.
+  4. Implementar ese CU mostrando en funcionamiento la táctica de calidad
+     de su atributo asignado (tabla de `Cronograma.md`) — no basta con que
+     la pantalla exista, tiene que **demostrar** la táctica (ej. si es
+     Seguridad, mostrar el flujo de autenticación real, no un login mock
+     que acepta cualquier contraseña).
+  5. Candidatos razonables por bloque temático propio, a confirmar por
+     cada uno (no son una asignación definitiva, son puntos de partida
+     para el paso 2 de arriba): Daniel — algo del bloque Parqueaderos
+     (CU-021–023, ya usa Redis para ocupación según
+     `services/parqueaderos/README.md`); Sebastián — algo del bloque
+     Pedidos (CU-011–015, validación de pedidos por QR) o Cuentas/Roles
+     (CU-027–029, RBAC); Diego — algo del bloque Logística (CU-016–020)
+     o Proveedores/Pagos/Reportes (CU-030–032, ya tiene el patrón
+     Map-Reduce documentado en § Rendimiento de `ArchitecturalProposal.tex`).
+
+**Para los 4:** dejar evidencia demostrable — captura de pantalla, GIF
+corto, o mejor, poder correrlo en vivo el día de la entrega/sustentación.
 
 **Regla de las 3 reglas aquí:** si el prototipo usa una librería/framework
 puntual para lograr la táctica (ej. una librería de rate-limiting para
@@ -377,17 +450,31 @@ aparte si el prototipo mismo ya es la prueba funcionando.
 
 **Estado:** ❌ no redactado.
 
-**Qué producir:** una tabla simple, al final de
-`Work/DescripcionArquitecturaSoftware.tex`, del tipo:
+**Qué producir:** una tabla al final de
+`Work/DescripcionArquitecturaSoftware.tex` (nueva sección "Alcance
+comprometido para Entrega 2"). Propuesta de arranque, construida a partir
+de los dueños reales de cada bloque (`services/*/README.md`) y los
+atributos ya analizados en el punto 3 — **ajustar con el equipo, no
+copiar tal cual**:
 
-| CU | Integrante | QA que se implementará completo en Entrega 2 |
+| Bloque de CU | Integrante | QA a implementar completo en Entrega 2 |
 |---|---|---|
-| CU-006 (Mercado secundario) | Samuel Emperador | Disponibilidad, Rendimiento |
-| ... | ... | ... |
+| CU-006 (Mercado secundario) | Samuel Emperador | Consistencia (ASR-01), Rendimiento |
+| CU-010 (Evacuación ante emergencias) | Samuel Emperador | Disponibilidad, Seguridad física (Safety) |
+| CU-001–005 (Boletería) | Daniel Cristancho | Rendimiento (ASR-04, apertura de venta), Seguridad (pagos) |
+| CU-021–023 (Parqueadero: reserva/ingreso-salida) | Daniel Cristancho | Comprobabilidad, Integrabilidad (si toca la pasarela) |
+| CU-007–009 (Personal) | Samuel Emperador | Mantenibilidad |
+| CU-011–015 (Pedidos) | Sebastián Sánchez | Modificabilidad (menú/inventario), Usabilidad |
+| CU-027–029 (Cuentas, Roles, Recintos) | Sebastián Sánchez | Seguridad (RBAC) |
+| CU-016–020 (Logística) | Diego Coronado | Trazabilidad |
+| CU-030–032 (Proveedores, Pagos, Reportes) | Diego Coronado | Rendimiento (Map-Reduce sobre reportes), Trazabilidad (conciliación) |
+| CU-024–025 (Parqueadero: cobro/ocupación) | Samuel Emperador | Tiempo real (Redis) |
+| CU-026 (Gestión de eventos) | Samuel Emperador | Consistencia |
 
 Esto es una declaración de alcance, no requiere alternativas/evidencia —
 pero sí debe ser consistente con lo ya construido en los puntos 3 y 5 (no
-comprometer un atributo que nunca se analizó).
+comprometer un atributo que nunca se analizó), y **queda sujeta a
+aprobación del profesor** (regla de Clase 1).
 
 ---
 
@@ -422,23 +509,32 @@ comprometer un atributo que nunca se analizó).
       **Falta el 3er PoC recomendado** (failover activo vs. pasivo) — ver
       `PoCs/README.md`.
 - [ ] **Decidir el lenguaje/framework del backend de `services/*`**
-      (auditoría #2) — hoy está literalmente "por definir" y bloquea
-      empezar a codificar. **Sigue pendiente.**
-- [ ] **Decidir RabbitMQ vs. Kafka** (auditoría #3) — hoy el ADR-04 los
-      lista a ambos sin elegir. **Sigue pendiente.**
+      (auditoría #2) — pasos exactos y candidatos sugeridos ya escritos
+      arriba ("Cómo cerrar la decisión #2"); produce `poc-04-lenguaje-backend/`
+      y ADR nuevo. **Sigue pendiente.**
+- [ ] **Decidir RabbitMQ vs. Kafka** (auditoría #3) — pasos exactos ya
+      escritos arriba ("Cómo cerrar la decisión #3"); cierra el ADR-04
+      existente. **Sigue pendiente.**
 - [ ] **Construir el demo de Flutter y redactar el ADR-05 del stack móvil**
       (auditoría #8, desarrollado a fondo arriba) — es el ejemplo que
       motivó esta versión de la guía. **Sigue pendiente** (requiere
       instalar el SDK de Flutter).
+- [ ] **Construir PoC-03 (failover)** — pasos exactos ya escritos en el
+      punto 4 ("Tarea específica pendiente — 3er PoC"). **Sigue pendiente.**
 - [ ] **Cerrar la decisión UUID vs. JWT para el QR** (surgida del PoC-02) —
-      repetir el benchmark contra una base de datos en red antes de
-      fijarlo en un ADR.
+      pasos exactos ya escritos en el punto 4 (agregar latencia simulada,
+      re-correr, documentar en ADR-06). **Sigue pendiente.**
 - [ ] Auditar el resto de la tabla de decisiones (filas #1, #4, #5, #6, #7)
       y conseguir al menos evidencia liviana (documentación citada) donde
       no alcance el tiempo para un PoC propio.
 - [ ] Prototipo del CU complejo de cada integrante, demostrable en vivo
-      (punto 5).
-- [ ] Tabla de alcance para Entrega 2 (punto 6).
+      (punto 5) — Samuel Emperador ya tiene los suyos identificados
+      (CU-006, CU-010); Daniel/Sebastián/Diego siguen el procedimiento del
+      punto 5 para elegir el propio.
+- [x] Tabla de alcance para Entrega 2 (punto 6) — **propuesta de arranque
+      ya redactada** arriba, a partir de los dueños reales de cada bloque
+      de CU; falta que el equipo la confirme/ajuste y se pegue en
+      `DescripcionArquitecturaSoftware.tex`.
 - [x] `Work/DescripcionArquitecturaSoftware.tex` (22 páginas) y
       `Work/ArchitecturalProposal.tex` (30 páginas) compilan sin errores
       con los cambios de 2026-09-06. **Sigue sin copiarse a

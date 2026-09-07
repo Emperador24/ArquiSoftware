@@ -13,3 +13,6 @@
 # terminado) o Defense/, nunca en Work/ — ver CLAUDE.md. Evita que quede un
 # PDF de borrador rastreado ahí por accidente al compilar con pdflatex.
 Proyecto/Documentation/Work/*.pdf
+
+# Persistencia de Redis (queda al correr redis-server para los PoCs)
+dump.rdb
