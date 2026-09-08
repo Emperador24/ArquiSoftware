@@ -39,9 +39,17 @@ Diseño = corto plazo, acotado, táctico.
 - **Partition tolerance**: tolera desconexión entre nodos
 Ejemplos: CA (BD centrales), CP (banking), AP (redes sociales).
 
-**Estilos Arquitectónicos** (19 estilos para reconocer):
-Layered, Modular Monolith, Pipe-and-Filter, Microkernel, Service-based, Event-driven,
-ESB (orchestration SOA), Microservices, CQRS, Broker-domain.
+**Estilos Arquitectónicos** (10 principales):
+- **Layered (N-Tier)**: capas horizontales (UI → Biz → Data). Simple, común, monolítico.
+- **Modular Monolith**: monolito pero internamente modular (fácil de partir luego).
+- **Pipe-and-Filter**: cadena de procesadores, cada uno transforma datos (ETL, streams).
+- **Microkernel**: core pequeño + plugins modulares (ej: navegador, IDE).
+- **Service-based**: servicios coexistentes, DB compartida (entre monolith y microservices).
+- **Event-driven**: componentes desacoplados por eventos (pub-sub, async).
+- **ESB** (Enterprise Service Bus): orquestación centralizada (anticuado).
+- **Microservices**: servicios independientes, DB por servicio, deploy independiente.
+- **CQRS**: Command Query Responsibility Segregation (read y write por separado).
+- **Broker-domain**: brokers centrales conectan dominios distribuidos (peer-to-peer).
 
 ---
 
